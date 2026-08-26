@@ -3,7 +3,7 @@ from app.database import Base
 from datetime import datetime, timezone
 
 class FoodEntry(Base):
-    __tablename__ = "meal"
+    __tablename__ = "food_entries"
 
     id = Column(Integer, primary_key=True, index=True)
     name_of_food = Column(String(100), nullable=False)
