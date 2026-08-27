@@ -55,8 +55,16 @@ def delete_food_entry(entry_id:int, db:Session=Depends(get_db)):
 
     return{"message":"Food entry deleted."}
 
+
+#Allows user to search by meal type if they want to, else it shows all food entries
 @router.get("/", response_model=List[FoodEntryResponse])
-def get_all_food_entries(db:Session=Depends(get_db)):
-    return db.query(FoodEntry).all()
+def get_all_food_entries(of_meal_type:str | None=None, db:Session=Depends(get_db)):
+    if of_meal_type:
+        return db.query(FoodEntry).filter(FoodEntry.meal_type == of_meal_type.lower().strip())
+    else:
+        return db.query(FoodEntry).all()
+    
+    
+
     
 
