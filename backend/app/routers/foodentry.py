@@ -41,3 +41,16 @@ def update_food_entry(entry_id:int, food_entry:FoodEntryCreate, db:Session=Depen
     db.commit()
     db.refresh(db_food_entry)
     return db_food_entry
+
+
+@router.delete("/{entry_id}")
+def delete_food_entry(entry_id:int, db:Session=Depends(get_db)):
+    entry = db.query(FoodEntry).filter(FoodEntry.id == entry_id).first()
+
+    if not entry:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="food entry doesnt exist")
+
+    db.delete(entry)
+    db.commit()
+
+    return{"message":"Food entry deleted."}
