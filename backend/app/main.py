@@ -1,5 +1,4 @@
-from fastapi import FastAPI, HTTPException, status, Depends
-from typing import List
+from fastapi import FastAPI
 from app.database import engine, Base
 
 Base.metadata.create_all(bind=engine)
