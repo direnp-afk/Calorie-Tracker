@@ -14,6 +14,17 @@ class FoodEntry(Base):
     time_created = Column(DateTime(timezone=True), default=lambda:datetime.now(timezone.utc))
     meal_type = Column(String(20), nullable=False)
 
+class GoalEntry(Base):
+    __tablename__ = "nutrition_goals"
+
+    id = Column(Integer, primary_key=True, index=True)
+    calorie_target = Column(Integer, nullable=False)
+    protein_target = Column(Float, nullable=False)
+    carb_target = Column(Float, nullable=False)
+    fat_target = Column(Float, nullable=False)
+
+
+
 
 
 
