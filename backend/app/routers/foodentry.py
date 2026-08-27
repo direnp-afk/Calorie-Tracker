@@ -6,9 +6,10 @@ from backend.app.database import get_db
 from backend.app.schemas import FoodEntryCreate, FoodEntryResponse
 
 router = APIRouter(prefix="/food_entries", tags=["Food Entries"])
-                   
-                   
 
+
+                   
+#returns food entry based on the entry id inputted by user
 @router.get("/{entry_id}", response_model=FoodEntryResponse)
 def get_food_entry(entry_id:int, db:Session = Depends(get_db)):
     entry = db.query(FoodEntry).filter(FoodEntry.id == entry_id).first()
@@ -19,6 +20,7 @@ def get_food_entry(entry_id:int, db:Session = Depends(get_db)):
     return entry
 
 
+#allows for creating food entries
 @router.post("/", response_model=FoodEntryResponse)
 def create_food_entry(food_entry:FoodEntryCreate, db:Session=Depends(get_db)):
 
@@ -29,6 +31,7 @@ def create_food_entry(food_entry:FoodEntryCreate, db:Session=Depends(get_db)):
     return new_food_entry
 
 
+#allows user to update any food entry based on entry id given it exists
 @router.put("/{entry_id}", response_model=FoodEntryResponse)
 def update_food_entry(entry_id:int, food_entry:FoodEntryCreate, db:Session=Depends(get_db)):
     db_food_entry = db.query(FoodEntry).filter(FoodEntry.id == entry_id).first()
@@ -43,6 +46,7 @@ def update_food_entry(entry_id:int, food_entry:FoodEntryCreate, db:Session=Depen
     return db_food_entry
 
 
+#Lets user delete a food entry only if the food entry currently exists in database
 @router.delete("/{entry_id}")
 def delete_food_entry(entry_id:int, db:Session=Depends(get_db)):
     entry = db.query(FoodEntry).filter(FoodEntry.id == entry_id).first()
@@ -54,6 +58,7 @@ def delete_food_entry(entry_id:int, db:Session=Depends(get_db)):
     db.commit()
 
     return{"message":"Food entry deleted."}
+
 
 
 #Allows user to search by meal type if they want to, else it shows all food entries
