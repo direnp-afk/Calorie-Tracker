@@ -19,7 +19,7 @@ def get_food_entry(entry_id:int, db:Session = Depends(get_db)):
     return entry
 
 
-@router.post("/")
+@router.post("/", response_model=FoodEntryResponse)
 def create_food_entry(food_entry:FoodEntryCreate, db:Session=Depends(get_db)):
 
     new_food_entry = FoodEntry(**food_entry.dict())
@@ -29,5 +29,15 @@ def create_food_entry(food_entry:FoodEntryCreate, db:Session=Depends(get_db)):
     return new_food_entry
 
 
+@router.put("/{entry_id}", response_model=FoodEntryResponse)
+def update_food_entry(entry_id:int, food_entry:FoodEntryCreate, db:Session=Depends(get_db)):
+    db_food_entry = db.query(FoodEntry).filter(FoodEntry.id == entry_id).first()
+    if not db_food_entry:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Food entry does not exist.")
 
-    
+    for field, value in food_entry.dict().items():
+        setattr(db_food_entry, field, value)
+
+    db.commit()
+    db.refresh(db_food_entry)
+    return db_food_entry
