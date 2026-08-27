@@ -22,3 +22,20 @@ class FoodEntryResponse(BaseModel):
     time_created:datetime
 
     model_config = ConfigDict(from_attributes = True)
+
+
+class GoalEntryCreate(BaseModel):
+
+    calorie_target:int
+    protein_target:float
+    carb_target:float
+    fat_target:float
+
+class GoalEntryResponse(BaseModel):
+
+    id:int
+    calorie_target:int
+    protein_target:float
+    carb_target:float
+    fat_target:float
+
