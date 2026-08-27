@@ -54,3 +54,9 @@ def delete_food_entry(entry_id:int, db:Session=Depends(get_db)):
     db.commit()
 
     return{"message":"Food entry deleted."}
+
+@router.get("/", response_model=List[FoodEntryResponse])
+def get_all_food_entries(db:Session=Depends(get_db)):
+    return db.query(FoodEntry).all()
+    
+
