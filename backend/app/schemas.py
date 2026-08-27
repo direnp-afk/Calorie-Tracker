@@ -39,3 +39,4 @@ class GoalEntryResponse(BaseModel):
     carb_target:float
     fat_target:float
 
+
