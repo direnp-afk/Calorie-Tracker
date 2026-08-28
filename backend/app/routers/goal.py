@@ -27,6 +27,21 @@ def create_goal(goal:GoalEntryCreate, db:Session=Depends(get_db)):
     db.refresh(new_goal)
 
     return new_goal
-                
+
+
+@router.put("/{goal_id}", response_model=GoalEntryResponse)
+def update_goals(goal_id:int, goal:GoalEntryCreate, db:Session = Depends(get_db)):
+    db_goal = db.query(GoalEntry).filter(GoalEntry.id == goal_id).first()
+
+    if not db_goal:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nutrition goal doesnt exist")
+
+    for field, value in goal.dict().items():
+        setattr(db_goal, field, value)
+
+    db.commit()
+    db.refresh(db_goal)
+
+    return db_goal
 
 
