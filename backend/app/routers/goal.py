@@ -56,3 +56,10 @@ def delete_goals(goal_id:int, db:Session = Depends(get_db)):
     db.commit()
 
     return{"message":"goals have been deleted"}
+
+@router.get("/", response_model=List[GoalEntryResponse])
+def get_all_goals(db:Session = Depends(get_db)):
+    all_goals = db.query(GoalEntry).all()
+
+    return all_goals
+

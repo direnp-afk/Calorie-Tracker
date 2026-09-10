@@ -39,4 +39,5 @@ class GoalEntryResponse(BaseModel):
     carb_target:float
     fat_target:float
 
+    model_config = ConfigDict(from_attributes = True)
 
