@@ -23,6 +23,17 @@ class GoalEntry(Base):
     carb_target = Column(Float, nullable=False)
     fat_target = Column(Float, nullable=False)
 
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True)
+    email = Column(String(100), nullable=False, unique=True)
+    hashed_password = Column(String(100), nullable=False)
+
+
+
+    
+
 
 
 
