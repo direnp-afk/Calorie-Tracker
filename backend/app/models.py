@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float, DateTime
+from sqlalchemy import Column, Integer, String, Float, DateTime, Boolean
 from backend.app.database import Base
 from datetime import datetime, timezone
 
@@ -29,6 +29,7 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     email = Column(String(100), nullable=False, unique=True)
     hashed_password = Column(String(100), nullable=False)
+    is_user_active = Column(Boolean, default=True)
 
 
 
