@@ -178,4 +178,8 @@ The aim is to develop a complete, secure full-stack application while gaining pr
 
 **In active development.**
 
+<<<<<<< HEAD
 The core food-entry and nutritional-goal backend functionality has been implemented. The current focus is authentication and personalised user data, followed by nutritional calculations and frontend development.
+=======
+The core food-entry and nutritional-goal backend functionality has been implemented. The current focus is authentication and personalised user data, followed by nutritional calculations and frontend development.
+>>>>>>> 1267c2433ab23db88480e9aecc55b7a40a98d2ee
