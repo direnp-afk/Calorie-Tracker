@@ -1,8 +1,9 @@
 from backend.app.config import SECRET_KEY, ACCESS_TOKEN_EXPIRES, ALGORITHM
 from passlib.context import CryptContext
+from typing import Optional
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 import jwt
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 
 
@@ -15,3 +16,16 @@ def verify_password(plain_pwd:str, hashed_pwd:str) -> bool:
 
 def get_hashed_pwd(password:str) -> str:
     return password_context.hash(password)
+
+def create_access_token(data:dict, expires_delta: Optional[timedelta] = None):
+    #Copy the claims to avoid modifying the original dictionary
+    to_encode = data.copy()
+    if expires_delta:
+        expires = datetime.now(timezone.utc) + expires_delta
+    else:
+        expires = datetime.now(timezone.utc) + timedelta(minutes=15)
+
+    #add JWT expiry claim so expired tokens are rejected
+    to_encode.update({"exp":expires})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
