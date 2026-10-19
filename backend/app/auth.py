@@ -1,4 +1,6 @@
 from backend.app.config import SECRET_KEY, ACCESS_TOKEN_EXPIRES, ALGORITHM
+from backend.app.schemas import TokenData
+from fastapi import HTTPException, status
 from passlib.context import CryptContext
 from typing import Optional
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -29,3 +31,27 @@ def create_access_token(data:dict, expires_delta: Optional[timedelta] = None):
     to_encode.update({"exp":expires})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
+
+def verify_token(token:str) -> TokenData:
+    try:
+        #Verify the JWT signature and expiry before trusting its payload
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+
+        email:str = payload.get("sub")
+
+        #Rejects tokens that dont identify a user
+        if email is None:
+            raise HTTPException(
+                status_code= status.HTTP_401_UNAUTHORISED,
+                detail="Invalid credentials, could not verify",
+                headers={"WWW-Authenticate":"Bearer"}
+            )
+        return TokenData(email=email)
+    
+    except jwt.PyJWTError:
+        raise HTTPException(
+            status_code= status.HTTP_401_UNAUTHORISED,
+            detail="Invalid credentials, could not verify",
+            headers={"WWW-Authenticate":"Bearer"}
+        )
+    
