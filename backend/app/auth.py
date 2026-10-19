@@ -9,3 +9,8 @@ from datetime import datetime, timedelta
 password_context = CryptContext(schemes=["bcrypt"], depreacted="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
+#checks the password against the hashed version of password
+def verify_password(plain_pwd:str, hashed_pwd:str) -> bool:
+    return password_context.verify(plain_pwd, hashed_pwd)
+
+

@@ -48,13 +48,16 @@ class UserResponse(BaseModel):
 
     model_config = ConfigDict(from_attributes = True)
 
+#validates credentials during user login
 class UserLogin(BaseModel):
     email:str
     password:str
 
+#The JWT response after the user has been authenticated successfully
 class Token(BaseModel):
     access_token:str
     token_type:str
 
+#holds user identity extracted from a verified JWT
 class TokenData(BaseModel):
     email:Optional[str] = None
