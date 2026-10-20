@@ -1,6 +1,9 @@
 from backend.app.config import SECRET_KEY, ACCESS_TOKEN_EXPIRES, ALGORITHM
 from backend.app.schemas import TokenData
-from fastapi import HTTPException, status
+from backend.app.models import User
+from backend.app.database import get_db
+from fastapi import HTTPException, status, Depends
+from sqlalchemy.orm import Session
 from passlib.context import CryptContext
 from typing import Optional
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -55,3 +58,14 @@ def verify_token(token:str) -> TokenData:
             headers={"WWW-Authenticate":"Bearer"}
         )
     
+def get_current_user(token:str = Depends(oauth2_scheme), db:Session = Depends(get_db)):
+    token_data = verify_token(token)
+    user = db.query(User).filter(User.email == token_data.email).first()
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="User not found",
+            headers={"WWW-Authenticate":"Bearer"}
+        )
+    return user
+
