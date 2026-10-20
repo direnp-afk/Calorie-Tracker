@@ -41,6 +41,9 @@ class UserCreate(BaseModel):
     email:str
     password:str
 
+class UserUpdate(BaseModel):
+    email:str
+
 class UserResponse(BaseModel):
     id:int
     email:str
