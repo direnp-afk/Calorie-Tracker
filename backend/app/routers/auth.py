@@ -10,7 +10,7 @@ from backend.app.schemas import UserCreate, UserResponse, Token
 from datetime import timedelta
 
 
-router = APIRouter(prefix="auth", tags=["Authentication"])
+router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 
 @router.post("/token", response_model=Token)

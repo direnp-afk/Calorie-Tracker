@@ -6,13 +6,13 @@ from fastapi import HTTPException, status, Depends
 from sqlalchemy.orm import Session
 from passlib.context import CryptContext
 from typing import Optional
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordBearer
 import jwt
 from datetime import datetime, timedelta, timezone
 
 
 
-password_context = CryptContext(schemes=["bcrypt"], depreacted="auto")
+password_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 #checks the password against the hashed version of password
