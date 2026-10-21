@@ -5,6 +5,7 @@ from backend.app.database import get_db
 from fastapi import HTTPException, status, Depends
 from sqlalchemy.orm import Session
 from passlib.context import CryptContext
+from pwdlib import PasswordHash
 from typing import Optional
 from fastapi.security import OAuth2PasswordBearer
 import jwt
@@ -12,15 +13,18 @@ from datetime import datetime, timedelta, timezone
 
 
 
-password_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+#password_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
+
+password_hash = PasswordHash.recommended()
+
 
 #checks the password against the hashed version of password
 def verify_password(plain_pwd:str, hashed_pwd:str) -> bool:
-    return password_context.verify(plain_pwd, hashed_pwd)
+    return password_hash.verify(plain_pwd, hashed_pwd)
 
 def get_hashed_pwd(password:str) -> str:
-    return password_context.hash(password)
+    return password_hash.hash(password)
 
 def create_access_token(data:dict, expires_delta: Optional[timedelta] = None):
     #Copy the claims to avoid modifying the original dictionary

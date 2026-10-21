@@ -28,7 +28,7 @@ def login_for_token_access(form_data: OAuth2PasswordRequestForm = Depends(), db:
             detail="User is inactive."
         )
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRES)
-    access_token = create_access_token(data={"sub":user.email}, expires_delta=access_token_expires)
+    access_token = create_access_token(data={"sub":str(user.id)}, expires_delta=access_token_expires)
     return{"access_token":access_token, "token_type":"bearer"}
 
 
@@ -40,10 +40,10 @@ def register_user(user:UserCreate, db:Session = Depends(get_db)):
             detail="User already exists"
         )
 
-    hashed_password = get_hashed_pwd(user.password)
+    hashed_pwd = get_hashed_pwd(user.password)
     db_user = User(
         email = user.email,
-        hashed_pwd = hashed_password
+        hashed_password = hashed_pwd
     )
     db.add(db_user)
     db.commit()
