@@ -13,7 +13,7 @@ def get_user(current_user:User = Depends(get_current_active_user)):
 
 
 @router.put("/me", response_model=UserResponse)
-def update_user(upd_user:UserUpdate, current_user:User = Depends(get_current_active_user), db:Session = Depends(get_db)):
+def update_user_email(upd_user:UserUpdate, current_user:User = Depends(get_current_active_user), db:Session = Depends(get_db)):
     #Prevent email conflicts while excluding the current users account
     if db.query(User).filter(User.email == upd_user.email, User.id != current_user.id).first():
         raise HTTPException(
@@ -25,6 +25,11 @@ def update_user(upd_user:UserUpdate, current_user:User = Depends(get_current_act
     db.commit()
     db.refresh(current_user)
     return current_user
+
+
+@router.put("/me/change-password")
+def update_user_password():
+    pass
 
 
 @router.delete("/me")

@@ -44,6 +44,10 @@ class UserCreate(BaseModel):
 class UserUpdate(BaseModel):
     email:str
 
+class PasswordChange(BaseModel):
+    current_password:str
+    new_password:str
+
 class UserResponse(BaseModel):
     id:int
     email:str
