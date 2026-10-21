@@ -4,7 +4,6 @@ from backend.app.models import User
 from backend.app.database import get_db
 from fastapi import HTTPException, status, Depends
 from sqlalchemy.orm import Session
-from passlib.context import CryptContext
 from pwdlib import PasswordHash
 from typing import Optional
 from fastapi.security import OAuth2PasswordBearer
@@ -13,9 +12,7 @@ from datetime import datetime, timedelta, timezone
 
 
 
-#password_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
-
 password_hash = PasswordHash.recommended()
 
 
