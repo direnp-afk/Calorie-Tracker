@@ -63,4 +63,4 @@ class Token(BaseModel):
 
 #holds user identity extracted from a verified JWT
 class TokenData(BaseModel):
-    email:Optional[str] = None
+    user_id:Optional[int] = None
