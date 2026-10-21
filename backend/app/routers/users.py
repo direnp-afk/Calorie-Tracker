@@ -5,7 +5,7 @@ from backend.app.models import User
 from sqlalchemy.orm import Session
 from backend.app.database import get_db
 
-router = APIRouter(prefix="/users", list=["Users"])
+router = APIRouter(prefix="/users", tags=["Users"])
 
 @router.get("/me", response_model=UserResponse)
 def get_user(current_user:User = Depends(get_current_active_user)):
@@ -26,5 +26,12 @@ def update_user(upd_user:UserUpdate, current_user:User = Depends(get_current_act
     db.refresh(current_user)
     return current_user
 
+
+@router.delete("/me")
+def delete_user(current_user:User = Depends(get_current_active_user), db:Session = Depends(get_db)):
+    db.delete(current_user)
+    db.commit()
+
+    return {"Message":"User has been deleted"}
 
     
