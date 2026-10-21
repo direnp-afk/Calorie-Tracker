@@ -40,7 +40,7 @@ def verify_token(token:str) -> TokenData:
         #Verify the JWT signature and expiry before trusting its payload
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
 
-        user_id:str = payload.get("sub")
+        user_id:str | None = payload.get("sub")
 
         #Rejects tokens that dont identify a user
         if user_id is None:
@@ -51,7 +51,7 @@ def verify_token(token:str) -> TokenData:
             )
         return TokenData(user_id=int(user_id))
     
-    except jwt.PyJWTError:
+    except (jwt.PyJWTError, TypeError, ValueError):
         raise HTTPException(
             status_code= status.HTTP_401_UNAUTHORISED,
             detail="Invalid credentials, could not verify",
