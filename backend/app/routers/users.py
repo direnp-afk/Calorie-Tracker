@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from backend.app.schemas import UserResponse, UserUpdate
-from backend.app.auth import get_current_active_user
+from backend.app.schemas import UserResponse, UserUpdate, PasswordChange
+from backend.app.auth import get_current_active_user, verify_password, get_hashed_pwd
 from backend.app.models import User
 from sqlalchemy.orm import Session
 from backend.app.database import get_db
@@ -28,9 +28,16 @@ def update_user_email(upd_user:UserUpdate, current_user:User = Depends(get_curre
 
 
 @router.put("/me/change-password")
-def update_user_password():
-    pass
-
+def update_user_password(password_data:PasswordChange, current_user:User = Depends(get_current_active_user), db:Session = Depends(get_db)):
+    if not verify_password(password_data.current_password, current_user.hashed_password):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Current password does not match"
+        )
+    hashed_pwd = get_hashed_pwd(password_data.new_password)
+    current_user.hashed_password = hashed_pwd
+    db.commit()
+    return {"Message":"Password has been Changed"}
 
 @router.delete("/me")
 def delete_user(current_user:User = Depends(get_current_active_user), db:Session = Depends(get_db)):
