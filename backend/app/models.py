@@ -64,6 +64,8 @@ class UserProfile(Base):
     height_cm = Column(Float, nullable=False)
     activity_level = Column(String(30), nullable=False)
     fitness_goal = Column(String(30), nullable=False)
+    goal_weight_kg = Column(float, nullable=True)
+    weekly_weight_change_kg = Column(float, nullable=True)
     user = relationship("User", back_populates="profile")
 
 
