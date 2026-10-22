@@ -8,6 +8,16 @@ from backend.app.auth import get_current_active_user, get_db
 
 router = APIRouter(prefix="/profile", tags=["User_Profile"])
 
+@router.get("/me", response_model=UserProfileResponse)
+def get_user_profile(current_user:User = Depends(get_current_active_user), db:Session = Depends(get_db)):
+    current_user_profile = db.query(UserProfile).filter(UserProfile.user_id == current_user.id).first()
+    if not current_user_profile:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Profile does not exist"
+        )
+    return current_user_profile
+
 
 @router.post("/me", response_model=UserProfileResponse)
 def create_user_profile(user_profile:UserProfileCreate, current_user:User = Depends(get_current_active_user), db:Session = Depends(get_db)):
