@@ -44,7 +44,7 @@ class User(Base):
     food_entries = relationship(
         "FoodEntry",
         back_populates="user",
-        cascade="all, delete-oprhan"
+        cascade="all, delete-orphan"
     )
     goals = relationship(
         "GoalEntry",

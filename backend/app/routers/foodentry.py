@@ -8,17 +8,21 @@ from backend.app.auth import get_current_active_user
 from datetime import date, datetime, timezone, time, timedelta
 
 
-
 router = APIRouter(prefix="/food_entries", tags=["Food Entries"])
-
 
                    
 #returns food entry based on the entry id inputted by user
 @router.get("/me", response_model=List[FoodEntryResponse])
-def get_food_entries(current_user:User = Depends(get_current_active_user), db:Session = Depends(get_db)):
-    food_entries = db.query(FoodEntry).filter(FoodEntry.user_id == current_user.id).all()
-    if not food_entries:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Food entries not found")
+def get_food_entries(day: date | None = None, current_user:User = Depends(get_current_active_user), db:Session = Depends(get_db)):
+
+    selected_day = day or datetime.now(timezone.utc).date()
+    start = datetime.combine(selected_day, time.min, tzinfo=timezone.utc)
+    end = start + timedelta(days=1)
+     
+    food_entries = db.query(FoodEntry).filter(
+        FoodEntry.user_id == current_user.id,
+        FoodEntry.time_created >= start, FoodEntry.time_created < end
+        ).all()
 
     return food_entries
 
