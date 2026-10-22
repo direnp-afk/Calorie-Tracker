@@ -1,5 +1,5 @@
 from pydantic import BaseModel, ConfigDict
-from typing import Optional
+from typing import Optional, Literal
 from datetime import datetime
 
 class FoodEntryCreate(BaseModel):
@@ -74,8 +74,8 @@ class UserProfileCreate(BaseModel):
     age:int
     weight_kg:float
     height_cm:float
-    activity_level:str
-    fitness_goal:str
+    activity_level: Literal["sedentary", "lightly_active", "moderately_active", "very_active"]
+    fitness_goal: Literal["lose", "maintain", "gain"]
 
 class UserProfileResponse(BaseModel):
     id:int
