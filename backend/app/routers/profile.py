@@ -35,7 +35,11 @@ def create_user_profile(user_profile:UserProfileCreate, current_user:User = Depe
         weight_kg = user_profile.weight_kg,
         height_cm = user_profile.height_cm,
         activity_level = user_profile.activity_level,
-        fitness_goal = user_profile.fitness_goal
+        fitness_goal = user_profile.fitness_goal,
+        goal_weight_kg = user_profile.goal_weight_kg,
+        weekly_weight_change_kg = (float(user_profile.weekly_weight_change_kg)
+                                   if user_profile.weekly_weight_change_kg is not None
+                                   else None )
     )
 
     db.add(new_profile)
