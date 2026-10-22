@@ -21,9 +21,21 @@ def get_goal(current_user:User = Depends(get_current_active_user), db:Session=De
 
 
 @router.post("/", response_model=GoalEntryResponse)
-def create_goal(goal:GoalEntryCreate, db:Session=Depends(get_db)):
+def create_goal(goal:GoalEntryCreate, current_user:User = Depends(get_current_active_user), db:Session=Depends(get_db)):
+    if db.query(GoalEntry).filter(GoalEntry.user_id == current_user.id).first():
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Nutrition Goal already exists"
+        )
 
-    new_goal = GoalEntry(**goal.dict())
+    new_goal = GoalEntry(
+        user_id = current_user.id,
+        calorie_target = goal.calorie_target,
+        protein_target = goal.protein_target,
+        carb_target = goal.carb_target,
+        fat_target = goal.fat_target
+    )
+    
     db.add(new_goal)
     db.commit()
     db.refresh(new_goal)
@@ -31,15 +43,17 @@ def create_goal(goal:GoalEntryCreate, db:Session=Depends(get_db)):
     return new_goal
 
 
-@router.put("/{goal_id}", response_model=GoalEntryResponse)
-def update_goals(goal_id:int, goal:GoalEntryCreate, db:Session = Depends(get_db)):
-    db_goal = db.query(GoalEntry).filter(GoalEntry.id == goal_id).first()
+@router.put("/me", response_model=GoalEntryResponse)
+def update_goals(goal:GoalEntryCreate, current_user:User = Depends(get_current_active_user), db:Session = Depends(get_db)):
+    db_goal = db.query(GoalEntry).filter(GoalEntry.user_id == current_user.id).first()
 
     if not db_goal:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nutrition goal doesnt exist")
 
-    for field, value in goal.dict().items():
-        setattr(db_goal, field, value)
+    db_goal.calorie_target = goal.calorie_target
+    db_goal.protein_target = goal.protein_target
+    db_goal.carb_target = goal.carb_target
+    db_goal.fat_target = goal.fat_target
 
     db.commit()
     db.refresh(db_goal)
