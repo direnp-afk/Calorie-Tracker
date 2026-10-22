@@ -37,9 +37,17 @@ def get_food_entry(entry_id:int, current_user:User = Depends(get_current_active_
 
 #allows for creating food entries
 @router.post("/", response_model=FoodEntryResponse)
-def create_food_entry(food_entry:FoodEntryCreate, db:Session=Depends(get_db)):
+def create_food_entry(food_entry:FoodEntryCreate, current_user:User = Depends(get_current_active_user), db:Session=Depends(get_db)):
 
-    new_food_entry = FoodEntry(**food_entry.dict())
+    new_food_entry = FoodEntry(
+        user_id = current_user.id,
+        name_of_food = food_entry.name_of_food,
+        calories = food_entry.calories,
+        protein = food_entry.protein,
+        carbs = food_entry.carbs,
+        fats = food_entry.fats,
+        meal_type = food_entry.meal_type
+    )
     db.add(new_food_entry)
     db.commit()
     db.refresh(new_food_entry)
