@@ -2,7 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from backend.app.models import UserProfile, User
 from backend.app.schemas import UserProfileCreate, UserProfileResponse
-from backend.app.auth import get_current_active_user, get_db
+from backend.app.auth import get_current_active_user
+from backend.app.database import get_db
 
 
 

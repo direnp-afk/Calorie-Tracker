@@ -1,23 +1,34 @@
 from fastapi import HTTPException, status, Depends, APIRouter
 from typing import List
 from sqlalchemy.orm import Session
-from backend.app.models import FoodEntry
+from backend.app.models import FoodEntry, User
 from backend.app.database import get_db
 from backend.app.schemas import FoodEntryCreate, FoodEntryResponse
+from backend.app.auth import get_current_active_user
+from datetime import date, datetime, timezone, time, timedelta
+
+
 
 router = APIRouter(prefix="/food_entries", tags=["Food Entries"])
 
 
                    
 #returns food entry based on the entry id inputted by user
+@router.get("/me", response_model=List[FoodEntryResponse])
+def get_food_entries(current_user:User = Depends(get_current_active_user), db:Session = Depends(get_db)):
+    food_entries = db.query(FoodEntry).filter(FoodEntry.user_id == current_user.id).all()
+    if not food_entries:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Food entries not found")
+
+    return food_entries
+
 @router.get("/{entry_id}", response_model=FoodEntryResponse)
-def get_food_entry(entry_id:int, db:Session = Depends(get_db)):
-    entry = db.query(FoodEntry).filter(FoodEntry.id == entry_id).first()
+def get_food_entry(entry_id:int, current_user:User = Depends(get_current_active_user), db:Session = Depends(get_db)):
+    food_entry = db.query(FoodEntry).filter(FoodEntry.id == entry_id, FoodEntry.user_id == current_user.id).first()
+    if not food_entry:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Food entries not found")
 
-    if not entry:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Food entry not found")
-
-    return entry
+    return food_entry
 
 
 #allows for creating food entries
