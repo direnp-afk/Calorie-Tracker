@@ -11,7 +11,7 @@ from datetime import date, datetime, timezone, time, timedelta
 router = APIRouter(prefix="/food_entries", tags=["Food Entries"])
 
                    
-#returns food entry based on the entry id inputted by user
+
 @router.get("/me", response_model=List[FoodEntryResponse])
 def get_food_entries(day: date | None = None, current_user:User = Depends(get_current_active_user), db:Session = Depends(get_db)):
 
@@ -35,7 +35,6 @@ def get_food_entry(entry_id:int, current_user:User = Depends(get_current_active_
     return food_entry
 
 
-#allows for creating food entries
 @router.post("/", response_model=FoodEntryResponse)
 def create_food_entry(food_entry:FoodEntryCreate, current_user:User = Depends(get_current_active_user), db:Session=Depends(get_db)):
 
@@ -54,25 +53,29 @@ def create_food_entry(food_entry:FoodEntryCreate, current_user:User = Depends(ge
     return new_food_entry
 
 
-#allows user to update any food entry based on entry id given it exists
+#allows currently logged in user to update any food entry based on entry_id
 @router.put("/{entry_id}", response_model=FoodEntryResponse)
-def update_food_entry(entry_id:int, food_entry:FoodEntryCreate, db:Session=Depends(get_db)):
-    db_food_entry = db.query(FoodEntry).filter(FoodEntry.id == entry_id).first()
+def update_food_entry(entry_id:int, food_entry:FoodEntryCreate, current_user:User = Depends(get_current_active_user), db:Session=Depends(get_db)):
+    db_food_entry = db.query(FoodEntry).filter(FoodEntry.id == entry_id, FoodEntry.user_id == current_user.id).first()
     if not db_food_entry:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Food entry does not exist.")
 
-    for field, value in food_entry.dict().items():
-        setattr(db_food_entry, field, value)
+    db_food_entry.name_of_food = food_entry.name_of_food
+    db_food_entry.calories = food_entry.calories
+    db_food_entry.protein = food_entry.protein
+    db_food_entry.carbs = food_entry.carbs
+    db_food_entry.fats = food_entry.fats
+    db_food_entry.meal_type = food_entry.meal_type
 
     db.commit()
     db.refresh(db_food_entry)
     return db_food_entry
 
 
-#Lets user delete a food entry only if the food entry currently exists in database
+#Lets user delete a food entry belonging to the currently logged in user
 @router.delete("/{entry_id}")
-def delete_food_entry(entry_id:int, db:Session=Depends(get_db)):
-    entry = db.query(FoodEntry).filter(FoodEntry.id == entry_id).first()
+def delete_food_entry(entry_id:int, current_user:User = Depends(get_current_active_user), db:Session=Depends(get_db)):
+    entry = db.query(FoodEntry).filter(FoodEntry.id == entry_id, FoodEntry.user_id == current_user.id).first()
 
     if not entry:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="food entry doesnt exist")
