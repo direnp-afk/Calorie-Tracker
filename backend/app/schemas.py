@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 from typing import Optional, Literal
 from datetime import datetime
 
@@ -78,6 +78,29 @@ class UserProfileCreate(BaseModel):
     fitness_goal: Literal["lose", "maintain", "gain"]
     goal_weight_kg: float | None = Field(default=None, gt=0)
     weekly_weight_change_kg: Literal["0.15", "0.25", "0.375", "0.5", "0.625", "0.75", "0.875", "1.0"] | None = None
+
+    @model_validator(mode="after")
+    def validate_weight_goal(self):
+
+        if self.fitness_goal in ("lose", "gain"):
+            if self.goal_weight_kg is None or self.weekly_weight_change_kg is None:
+                raise ValueError(
+                    "Goal weight and weekly weight change are required"
+                )
+
+        if self.fitness_goal == "lose":
+            if self.goal_weight_kg >= self.weight_kg:
+                raise ValueError(
+                    "Goal weight must be lower than current weight"
+                )
+
+        elif self.fitness_goal == "gain":
+            if self.goal_weight_kg <= self.weight_kg:
+                raise ValueError(
+                    "Goal weight must be higher than current weight"
+                )
+
+        return self
 
 class UserProfileResponse(BaseModel):
     id:int
