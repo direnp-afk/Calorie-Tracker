@@ -18,12 +18,11 @@ def calculate_rmr(weight_kg:float, height_cm:float, age:int, gender:str) -> floa
         raise ValueError("Automatic calculation unavailable")
     
     rmr = 10*weight_kg + 6.25*height_cm - 5*age + s
-
     return rmr
 
 def calculate_tdee(rmr:float, activity_level:str) -> float:
     multiplier = ACTIVITY_FACTORS.get(activity_level)
-
+    
     if multiplier is None:
         raise ValueError("Invalid activity level")
 
@@ -60,9 +59,6 @@ def estimate_goal_date(current_weight_kg: float, goal_weight_kg: float | None, w
         raise ValueError("Valid goal weight and weekly change are required")
 
     weight_difference = abs(goal_weight_kg - current_weight_kg)
-
     weeks_needed = weight_difference / weekly_weight_change_kg
-
     days_needed = ceil(weeks_needed * 7)
-
     return date.today() + timedelta(days=days_needed)
