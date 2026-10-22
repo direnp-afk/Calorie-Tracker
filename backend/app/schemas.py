@@ -68,3 +68,23 @@ class Token(BaseModel):
 #holds user identity extracted from a verified JWT
 class TokenData(BaseModel):
     user_id:Optional[int] = None
+
+class UserProfileCreate(BaseModel):
+    gender:str
+    age:int
+    weight_kg:float
+    height_cm:float
+    activity_level:str
+    fitness_goal:str
+
+class UserProfileResponse(BaseModel):
+    id:int
+    user_id:int
+    gender:str
+    age:int
+    weight_kg:float
+    height_cm:float
+    activity_level:str
+    fitness_goal:str
+
+    model_config = ConfigDict(from_attributes = True)
