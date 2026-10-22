@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 from typing import Optional, Literal
 from datetime import datetime
 
@@ -70,10 +70,10 @@ class TokenData(BaseModel):
     user_id:Optional[int] = None
 
 class UserProfileCreate(BaseModel):
-    gender:str
-    age:int
-    weight_kg:float
-    height_cm:float
+    gender: Literal["male", "female", "prefer_not_to_say"]
+    age:int = Field(gt=0, lt= 120)
+    weight_kg:float = Field(gt=0)
+    height_cm:float = Field(gt=0)
     activity_level: Literal["sedentary", "lightly_active", "moderately_active", "very_active"]
     fitness_goal: Literal["lose", "maintain", "gain"]
 
