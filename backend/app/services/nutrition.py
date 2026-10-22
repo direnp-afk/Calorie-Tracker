@@ -1,3 +1,6 @@
+from datetime import date, timedelta
+from math import ceil
+
 
 ACTIVITY_FACTORS = {
     "sedentary":1.2,
@@ -47,3 +50,19 @@ def calculate_calorie_target(fitness_goal:str, TDEE:float, weekly_weight_change_
     else:
         raise ValueError("invalid fitness goal")
 
+
+def estimate_goal_date(current_weight_kg: float, goal_weight_kg: float | None, weekly_weight_change_kg: float | None, fitness_goal: str) -> date | None:
+
+    if fitness_goal == "maintain":
+        return None
+
+    if goal_weight_kg is None or weekly_weight_change_kg is None or weekly_weight_change_kg <= 0:
+        raise ValueError("Valid goal weight and weekly change are required")
+
+    weight_difference = abs(goal_weight_kg - current_weight_kg)
+
+    weeks_needed = weight_difference / weekly_weight_change_kg
+
+    days_needed = ceil(weeks_needed * 7)
+
+    return date.today() + timedelta(days=days_needed)
