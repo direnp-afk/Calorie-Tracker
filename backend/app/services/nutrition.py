@@ -26,3 +26,24 @@ def calculate_tdee(rmr:float, activity_level:str) -> float:
 
     tdee = rmr*multiplier
     return tdee
+
+
+def calculate_calorie_target(fitness_goal:str, TDEE:float, weekly_weight_change_kg:float | None) -> float:
+
+    if fitness_goal == "maintain":
+        return TDEE
+
+    if weekly_weight_change_kg is None or weekly_weight_change_kg <= 0:
+        raise ValueError("Weekly weight change is required")
+
+    calorie_adjustment = (weekly_weight_change_kg*7700)/7
+
+    if fitness_goal == "gain":
+        surplus = TDEE + calorie_adjustment
+        return surplus
+    elif fitness_goal == "lose":
+        deficit = TDEE - calorie_adjustment
+        return deficit
+    else:
+        raise ValueError("invalid fitness goal")
+
