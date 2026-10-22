@@ -32,3 +32,28 @@ def create_user_profile(user_profile:UserProfileCreate, current_user:User = Depe
     db.refresh(new_profile)
 
     return new_profile
+
+
+@router.put("/me", response_model=UserProfileResponse)
+def update_user_profile(upd_profile:UserProfileCreate, current_user:User = Depends(get_current_active_user), db:Session = Depends(get_db)):
+    user_profile = db.query(UserProfile).filter(UserProfile.user_id == current_user.id).first()
+
+    if not user_profile:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User Profile not found"
+        )
+
+    user_profile.age = upd_profile.age
+    user_profile.gender = upd_profile.gender
+    user_profile.weight_kg = upd_profile.weight_kg
+    user_profile.height_cm = upd_profile.height_cm
+    user_profile.activity_level = upd_profile.activity_level
+    user_profile.fitness_goal = upd_profile.fitness_goal
+
+    db.commit()
+    db.refresh(user_profile)
+
+    return user_profile
+
+
