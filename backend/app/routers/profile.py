@@ -65,6 +65,10 @@ def update_user_profile(upd_profile:UserProfileCreate, current_user:User = Depen
     user_profile.height_cm = upd_profile.height_cm
     user_profile.activity_level = upd_profile.activity_level
     user_profile.fitness_goal = upd_profile.fitness_goal
+    user_profile.goal_weight_kg = upd_profile.goal_weight_kg
+    user_profile.weekly_weight_change_kg = (float(upd_profile.weekly_weight_change_kg)
+                                            if upd_profile.weekly_weight_change_kg is not None
+                                            else None)
 
     db.commit()
     db.refresh(user_profile)
