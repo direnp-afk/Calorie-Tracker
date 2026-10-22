@@ -7,6 +7,7 @@ class FoodEntry(Base):
     __tablename__ = "food_entries"
 
     id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     name_of_food = Column(String(100), nullable=False)
     calories = Column(Integer, nullable=False)
     protein = Column(Float, nullable=False)
@@ -14,15 +15,18 @@ class FoodEntry(Base):
     fats = Column(Float, nullable=False)
     time_created = Column(DateTime(timezone=True), default=lambda:datetime.now(timezone.utc))
     meal_type = Column(String(20), nullable=False)
+    user = relationship("User", back_populates="food_entries")
 
 class GoalEntry(Base):
     __tablename__ = "nutrition_goals"
 
     id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), unique=True, nullable=False)
     calorie_target = Column(Integer, nullable=False)
     protein_target = Column(Float, nullable=False)
     carb_target = Column(Float, nullable=False)
     fat_target = Column(Float, nullable=False)
+    user = relationship("User", back_populates="goals")
 
 class User(Base):
     __tablename__ = "users"
@@ -33,6 +37,17 @@ class User(Base):
     is_user_active = Column(Boolean, default=True)
     profile = relationship(
         "UserProfile",
+        back_populates="user",
+        uselist=False,
+        cascade="all, delete-orphan"
+    )
+    food_entries = relationship(
+        "FoodEntry",
+        back_populates="user",
+        cascade="all, delete-oprhan"
+    )
+    goals = relationship(
+        "GoalEntry",
         back_populates="user",
         uselist=False,
         cascade="all, delete-orphan"
