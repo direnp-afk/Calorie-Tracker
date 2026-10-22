@@ -76,6 +76,8 @@ class UserProfileCreate(BaseModel):
     height_cm:float = Field(gt=0)
     activity_level: Literal["sedentary", "lightly_active", "moderately_active", "very_active"]
     fitness_goal: Literal["lose", "maintain", "gain"]
+    goal_weight_kg: float | None = Field(default=None, gt=0)
+    weekly_weight_change_kg: Literal["0.15", "0.25", "0.375", "0.5", "0.625", "0.75", "0.875", "1.0"] | None = None
 
 class UserProfileResponse(BaseModel):
     id:int
@@ -86,5 +88,7 @@ class UserProfileResponse(BaseModel):
     height_cm:float
     activity_level:str
     fitness_goal:str
+    goal_weight_kg:float | None = None
+    weekly_weight_change_kg:float | None=None
 
     model_config = ConfigDict(from_attributes = True)
