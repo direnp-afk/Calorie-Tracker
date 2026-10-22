@@ -61,21 +61,5 @@ def update_goals(goal:GoalEntryCreate, current_user:User = Depends(get_current_a
     return db_goal
 
 
-@router.delete("/{goal_id}")
-def delete_goals(goal_id:int, db:Session = Depends(get_db)):
-    goal = db.query(GoalEntry).filter(GoalEntry.id == goal_id).first()
 
-    if not goal:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Goals not found")
-
-    db.delete(goal)
-    db.commit()
-
-    return{"message":"goals have been deleted"}
-
-@router.get("/", response_model=List[GoalEntryResponse])
-def get_all_goals(db:Session = Depends(get_db)):
-    all_goals = db.query(GoalEntry).all()
-
-    return all_goals
 
