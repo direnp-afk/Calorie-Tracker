@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, Float, DateTime, Boolean, ForeignKey
+from sqlalchemy.orm import relationship
 from backend.app.database import Base
 from datetime import datetime, timezone
 
@@ -30,6 +31,12 @@ class User(Base):
     email = Column(String(100), nullable=False, unique=True)
     hashed_password = Column(String(100), nullable=False)
     is_user_active = Column(Boolean, default=True)
+    profile = relationship(
+        "UserProfile",
+        back_populates="user",
+        uselist=False,
+        cascade="all, delete-orphan"
+    )
 
 class UserProfile(Base):
     __tablename__ = "user_profile"
@@ -42,6 +49,7 @@ class UserProfile(Base):
     height_cm = Column(Float, nullable=False)
     activity_level = Column(String(30), nullable=False)
     fitness_goal = Column(String(30), nullable=False)
+    user = relationship("User", back_populates="profile")
 
 
 

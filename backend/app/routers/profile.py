@@ -65,5 +65,3 @@ def update_user_profile(upd_profile:UserProfileCreate, current_user:User = Depen
     db.refresh(user_profile)
 
     return user_profile
-
-
