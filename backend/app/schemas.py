@@ -1,6 +1,6 @@
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 from typing import Optional, Literal
-from datetime import datetime
+from datetime import datetime, date
 
 class FoodEntryCreate(BaseModel):
     name_of_food:str
@@ -115,3 +115,11 @@ class UserProfileResponse(BaseModel):
     weekly_weight_change_kg:float | None=None
 
     model_config = ConfigDict(from_attributes = True)
+
+
+class GoalRecommendationResponse(BaseModel):
+    calorie_target:int
+    protein_target:float
+    carb_target:float
+    fat_target:float
+    estimated_goal_date: date | None
