@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from backend.app.database import engine, Base
-from backend.app.routers import foodentry, goal, auth, users, profile
+from backend.app.routers import foodentry, goal, auth, users, profile, summary
 
 
 
@@ -12,6 +12,7 @@ calorie_app.include_router(goal.router)
 calorie_app.include_router(auth.router)
 calorie_app.include_router(users.router)
 calorie_app.include_router(profile.router)
+calorie_app.include_router(summary.router)
 
 @calorie_app.get("/")
 def root():
