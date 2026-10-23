@@ -123,3 +123,10 @@ class GoalRecommendationResponse(BaseModel):
     carb_target:float
     fat_target:float
     estimated_goal_date: date | None
+
+
+class NutritionTotalsResponse(BaseModel):
+    calories:float
+    proteins:float
+    carbs:float
+    fats:float
