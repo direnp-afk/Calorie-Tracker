@@ -127,6 +127,13 @@ class GoalRecommendationResponse(BaseModel):
 
 class NutritionTotalsResponse(BaseModel):
     calories:float
-    proteins:float
+    protein:float
     carbs:float
     fats:float
+
+class DailySummaryResponse(BaseModel):
+    day:date
+    consumed:NutritionTotalsResponse
+    targets:NutritionTotalsResponse
+    remaining:NutritionTotalsResponse
+    meals:dict[str, NutritionTotalsResponse]
