@@ -1,10 +1,11 @@
 from fastapi import APIRouter, Depends, status, HTTPException
 from typing import List
 from sqlalchemy.orm import Session
-from backend.app.models import GoalEntry, User
-from backend.app.schemas import GoalEntryCreate, GoalEntryResponse
+from backend.app.models import GoalEntry, User, UserProfile
+from backend.app.schemas import GoalEntryCreate, GoalEntryResponse, GoalRecommendationResponse
 from backend.app.database import get_db
 from backend.app.auth import get_current_active_user
+from backend.app.services.nutrition import calculate_calorie_target, calculate_macros, calculate_rmr, calculate_tdee, estimate_goal_date
 
 
 router = APIRouter(prefix="/goals", tags=["Nutrition Goals"])
@@ -61,5 +62,44 @@ def update_goals(goal:GoalEntryCreate, current_user:User = Depends(get_current_a
     return db_goal
 
 
+@router.get("/recommendation", response_model=GoalRecommendationResponse)
+def get_goal_recommendation(current_user:User = Depends(get_current_active_user), db:Session = Depends(get_db)):
+    profile = db.query(UserProfile).filter(UserProfile.user_id == current_user.id).first()
 
+    if not profile:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User profile not found")
+
+    if profile.gender not in ("male", "female") or profile.age < 18:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Automatic calculation unavailable for this profile"
+        )
+
+    rmr = calculate_rmr(profile.weight_kg, profile.height_cm, profile.age, profile.gender)
+
+    tdee = calculate_tdee(rmr, profile.activity_level)
+
+    calorie_target = round(calculate_calorie_target(
+        profile.fitness_goal, tdee, profile.weekly_weight_change_kg
+    ))
+
+    if calorie_target <= 0:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Invalid calorie target")
+
+    macros = calculate_macros(calorie_target)
+
+    estimated_date = estimate_goal_date(
+        profile.weight_kg,
+        profile.goal_weight_kg,
+        profile.weekly_weight_change_kg,
+        profile.fitness_goal
+    )
+
+    return {
+        "calorie_target": calorie_target,
+        "protein_target": macros["protein_target"],
+        "carb_target": macros["carb_target"],
+        "fat_target": macros["fat_target"],
+        "estimated_goal_date": estimated_date
+    }
 
