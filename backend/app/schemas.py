@@ -137,3 +137,9 @@ class DailySummaryResponse(BaseModel):
     targets:NutritionTotalsResponse
     remaining:NutritionTotalsResponse
     meals:dict[str, NutritionTotalsResponse]
+
+
+class FoodEntryFromSearch(BaseModel):
+    fdc_id: int
+    quantity_g: float = Field(gt=0)
+    meal_type: Literal["breakfast", "lunch", "dinner", "snacks"]
