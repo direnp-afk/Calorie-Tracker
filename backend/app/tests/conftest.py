@@ -44,3 +44,18 @@ def client():
 
     app.dependency_overrides.clear()
     engine.dispose()
+
+@pytest.fixture
+def make_user(client):
+    #registers and logs in user, and returns authorisation header
+    def create_user(email="testuser@example.test"):
+        password = "TestPassword123"
+        response = client.post("/auth/register", json={"email": email, "password": password})
+        assert response.status_code == 200
+
+        response = client.post("/auth/token", data={"username": email, "password": password})
+        assert response.status_code == 200
+        token = response.json()["access_token"]
+        return {"Authorization": f"Bearer {token}"}
+
+    return create_user
