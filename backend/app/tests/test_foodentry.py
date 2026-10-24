@@ -17,4 +17,12 @@ def test_log_and_read_food_for_a_day(client, make_user):
     assert len(diary.json()) == 1
     assert diary.json()[0]["name_of_food"] == "Toast"
 
-    
+
+def test_users_cannot_read_each_others_food(client, make_user):
+    testuser1 = make_user("testuser1@example.test")
+    testuser2 = make_user("testuser2@example.test")
+    entry = client.post("/food_entries/", json=FOOD, headers=testuser1).json()
+
+    response = client.get(f"/food_entries/{entry['id']}", headers=testuser2)
+    assert response.status_code == 404
+
