@@ -18,7 +18,7 @@ class FoodEntry(Base):
     user = relationship("User", back_populates="food_entries")
     fdc_id = Column(Integer, nullable=True)
     quantity_g = Column(Float, nullable=True)
-    date_logeed = Column(Date, nullable=False)
+    date_logged = Column(Date, nullable=False)
 
 class GoalEntry(Base):
     __tablename__ = "nutrition_goals"
