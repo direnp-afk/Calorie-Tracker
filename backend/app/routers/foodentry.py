@@ -17,13 +17,8 @@ router = APIRouter(prefix="/food_entries", tags=["Food Entries"])
 def get_all_food_entries(day: date | None = None, current_user:User = Depends(get_current_active_user), db:Session = Depends(get_db)):
 
     selected_day = day or datetime.now(timezone.utc).date()
-    start = datetime.combine(selected_day, time.min, tzinfo=timezone.utc)
-    end = start + timedelta(days=1)
-     
-    food_entries = db.query(FoodEntry).filter(
-        FoodEntry.user_id == current_user.id,
-        FoodEntry.time_created >= start, FoodEntry.time_created < end
-        ).all()
+
+    food_entries = db.query(FoodEntry).filter(FoodEntry.user_id == current_user.id,FoodEntry.date_logged == selected_day).all()
 
     return food_entries
 
