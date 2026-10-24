@@ -16,6 +16,8 @@ class FoodEntry(Base):
     time_created = Column(DateTime(timezone=True), default=lambda:datetime.now(timezone.utc))
     meal_type = Column(String(20), nullable=False)
     user = relationship("User", back_populates="food_entries")
+    fdc_id = Column(Integer, nullable=True)
+    quantity_g = Column(Float, nullable=True)
 
 class GoalEntry(Base):
     __tablename__ = "nutrition_goals"
