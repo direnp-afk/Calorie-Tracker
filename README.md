@@ -9,16 +9,45 @@ I built the backend first to focus on authentication, database design, nutrition
 ## API Demonstration
 
 
-<img width="700" alt="image" src="https://github.com/user-attachments/assets/b2096802-39d6-407e-bcac-8978fe148dae" />
 
+## API Demonstration
 
-<img width="700" alt="image" src="https://github.com/user-attachments/assets/e73cb7d6-35e1-4f37-91b4-b85c18886c83" />
+<p align="center">
+  <strong>API Overview</strong>
+</p>
+<p align="center">
+  <img width="700" alt="FastAPI Swagger documentation showing the available REST API endpoints" src="https://github.com/user-attachments/assets/b2096802-39d6-407e-bcac-8978fe148dae" />
+  <br>
+  <sub>REST API endpoints organised using FastAPI's interactive documentation.</sub>
+</p>
 
+<p align="center">
+  <strong>Daily Nutrition Summary</strong>
+</p>
+<p align="center">
+  <img width="700" alt="Daily summary showing consumed calories, nutrition targets and remaining macros" src="https://github.com/user-attachments/assets/e73cb7d6-35e1-4f37-91b4-b85c18886c83" />
+  <br>
+  <sub>Daily calorie and macronutrient totals compared against user goals.</sub>
+</p>
 
-<img width="700" alt="image" src="https://github.com/user-attachments/assets/aa9081e1-9305-4c03-a796-876429dc4ba6" />
+<p align="center">
+  <strong>USDA Food Search</strong>
+</p>
+<p align="center">
+  <img width="700" alt="Successful USDA FoodData Central API search returning food results" src="https://github.com/user-attachments/assets/aa9081e1-9305-4c03-a796-876429dc4ba6" />
+  <br>
+  <sub>Food search results retrieved from USDA FoodData Central.</sub>
+</p>
 
+<p align="center">
+  <strong>Calorie Recommendation</strong>
+</p>
+<p align="center">
+  <img width="650" alt="Calculated calorie target, macronutrient targets and estimated goal date" src="https://github.com/user-attachments/assets/01690647-7fe9-4485-bf0d-0307e0284f17" />
+  <br>
+  <sub>Personalised calorie and macro recommendations with an estimated goal date.</sub>
+</p>
 
-<img width="650" alt="image" src="https://github.com/user-attachments/assets/01690647-7fe9-4485-bf0d-0307e0284f17" />
 
 
 ## Features
