@@ -8,16 +8,16 @@ I built the backend first to focus on authentication, database design, nutrition
 
 ## API Demonstration
 
-**API Overview**
+
 <img width="700" alt="image" src="https://github.com/user-attachments/assets/b2096802-39d6-407e-bcac-8978fe148dae" />
 
-**Daily Summary**
+
 <img width="700" alt="image" src="https://github.com/user-attachments/assets/e73cb7d6-35e1-4f37-91b4-b85c18886c83" />
 
-**USDA Food Search**
+
 <img width="700" alt="image" src="https://github.com/user-attachments/assets/aa9081e1-9305-4c03-a796-876429dc4ba6" />
 
-**Calorie Recommendation**
+
 <img width="650" alt="image" src="https://github.com/user-attachments/assets/01690647-7fe9-4485-bf0d-0307e0284f17" />
 
 
