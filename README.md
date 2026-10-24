@@ -85,6 +85,28 @@ I built the backend first to focus on authentication, database design, nutrition
 | Testing | pytest, FastAPI TestClient, HTTPX |
 | Other tools | Git, GitHub, environment variables with python-dotenv, Swagger UI / OpenAPI |
 
+## Design Decisions
+
+**Project structure**
+
+I separated the API into different routers for authentication, users, profiles, goals and food logging. I found this easier to manage than keeping everything in `main.py`, especially as I added more endpoints.
+
+**Nutrition calculations**
+
+I kept the nutrition calculations in `services/nutrition.py`, separate from the API routes. This lets me test the RMR, TDEE, calorie and macro calculations individually without needing to make API requests.
+
+**Database**
+
+I used SQLite with SQLAlchemy for the first version because it was straightforward to set up and work with locally. I created relationships between users, profiles, goals and food entries, and made sure protected queries only return data belonging to the logged-in user.
+
+**Food data**
+
+Rather than creating my own food database, I integrated USDA FoodData Central. The backend retrieves nutrition information and adjusts it based on the quantity being logged. I also included manual food entries for anything that isn't available through the API.
+
+**Testing**
+
+I added pytest tests for the main calculations and API functionality. The tests use a separate in-memory database and mocked USDA responses, so I can check the backend without changing real user data or relying on external requests.
+
 ## Project structure
 
 ```text
