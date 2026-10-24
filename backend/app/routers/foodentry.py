@@ -3,7 +3,7 @@ from typing import List
 from sqlalchemy.orm import Session
 from backend.app.models import FoodEntry, User
 from backend.app.database import get_db
-from backend.app.schemas import FoodEntryCreate, FoodEntryResponse, FoodEntryFromSearch
+from backend.app.schemas import FoodEntryCreate, FoodEntryResponse, FoodEntryFromSearch, FoodQuantityUpdate
 from backend.app.auth import get_current_active_user
 from backend.app.routers.foodsearch import get_usda_food_details
 from datetime import date, datetime, timezone, time, timedelta
@@ -85,6 +85,32 @@ def create_food_from_search(food:FoodEntryFromSearch, current_user:User = Depend
     return new_food_entry
 
 
+@router.patch("/{entry_id}/quantity", response_model=FoodEntryResponse)
+def update_food_quantity(entry_id:int, food:FoodQuantityUpdate, current_user:User = Depends(get_current_active_user), db:Session = Depends(get_db)):
+
+    db_food_entry = db.query(FoodEntry).filter(FoodEntry.id == entry_id,FoodEntry.user_id == current_user.id).first()
+
+    if not db_food_entry:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Food entry not found")
+
+    if db_food_entry.fdc_id is None:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Quantity can only be updated for USDA foods")
+
+    food_details = get_usda_food_details(db_food_entry.fdc_id, food.quantity_g)
+
+    if any(food_details[nutrient] is None for nutrient in ("calories", "protein", "carbs", "fats")):
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Nutritional information is incomplete")
+
+    db_food_entry.quantity_g = food.quantity_g
+    db_food_entry.calories = round(food_details["calories"])
+    db_food_entry.protein = food_details["protein"]
+    db_food_entry.carbs = food_details["carbs"]
+    db_food_entry.fats = food_details["fats"]
+
+    db.commit()
+    db.refresh(db_food_entry)
+    return db_food_entry
+
 
 #allows currently logged in user to update any food entry based on entry_id
 @router.put("/{entry_id}", response_model=FoodEntryResponse)
@@ -92,6 +118,12 @@ def update_food_entry(entry_id:int, food_entry:FoodEntryCreate, current_user:Use
     db_food_entry = db.query(FoodEntry).filter(FoodEntry.id == entry_id, FoodEntry.user_id == current_user.id).first()
     if not db_food_entry:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Food entry does not exist.")
+
+    if db_food_entry.fdc_id is not None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Use the quantity endpoint to update USDA foods"
+        )
 
     db_food_entry.name_of_food = food_entry.name_of_food
     db_food_entry.calories = food_entry.calories
