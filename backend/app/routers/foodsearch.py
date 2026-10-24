@@ -40,8 +40,8 @@ def search_food(query:str, current_user:User = Depends(get_current_active_user))
     return foods
 
 
-@router.get("/{fdc_id}")
-def get_food_details(fdc_id:int,quantity_g:float = Query(default=100, gt=0), current_user:User = Depends(get_current_active_user)):
+
+def get_usda_food_details(fdc_id:int, quantity_g:float):
 
     url = f"https://api.nal.usda.gov/fdc/v1/food/{fdc_id}"
 
@@ -142,3 +142,6 @@ def get_food_details(fdc_id:int,quantity_g:float = Query(default=100, gt=0), cur
     }
 
 
+@router.get("/{fdc_id}")
+def get_food_details(fdc_id:int, quantity_g:float = Query(default=100, gt=0), current_user:User = Depends(get_current_active_user)):
+    return get_usda_food_details(fdc_id, quantity_g)
