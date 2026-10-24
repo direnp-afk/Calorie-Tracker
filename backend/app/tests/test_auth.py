@@ -15,3 +15,9 @@ def test_register_and_login(client):
     assert response.status_code == 200
     assert response.json()["access_token"]
 
+
+def test_short_password_rejected(client):
+    response = client.post(
+        "/auth/register", json={"email": "sam@example.test", "password": "abc"}
+    )
+    assert response.status_code == 422
