@@ -15,4 +15,9 @@ def test_create_goal(client, make_user):
     response = client.get("/goals/me", headers=headers)
     assert response.json()["calorie_target"] == 2400
 
-    
+
+def test_goal_macros_must_match_calories(client, make_user):
+    headers = make_user()
+    invalid_goal = {**GOAL, "protein_target": 10}
+    response = client.post("/goals/", json=invalid_goal, headers=headers)
+    assert response.status_code == 422
