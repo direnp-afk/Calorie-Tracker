@@ -20,7 +20,7 @@ class FoodEntryResponse(BaseModel):
     fats:float
     meal_type:str
     time_created:datetime
-    fsc_id:int | None = None
+    fdc_id:int | None = None
     quantity_g:float | None = None
     date_logged:date
 
