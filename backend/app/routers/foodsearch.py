@@ -1,5 +1,5 @@
 import requests
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Query
 from backend.app.auth import get_current_active_user
 from backend.app.models import User
 from backend.app.config import USDA_API_KEY
@@ -41,7 +41,7 @@ def search_food(query:str, current_user:User = Depends(get_current_active_user))
 
 
 @router.get("/{fdc_id}")
-def get_food_details(fdc_id:int, current_user:User = Depends(get_current_active_user)):
+def get_food_details(fdc_id:int,quantity_g:float = Query(default=100, gt=0), current_user:User = Depends(get_current_active_user)):
 
     url = f"https://api.nal.usda.gov/fdc/v1/food/{fdc_id}"
 
@@ -57,13 +57,41 @@ def get_food_details(fdc_id:int, current_user:User = Depends(get_current_active_
         response.raise_for_status()
 
     except requests.RequestException:
-        raise HTTPException(status_code=502, detail="Food details unavailable")
+        raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY, detail="Food details unavailable")
 
     food = response.json()
+    nutrients = {}
+    for item in food.get("foodNutrients", []):
+        nutrient_id = item.get("nutrient", {}).get("id")
+        amount = item.get("amount")
+
+        if nutrient_id is not None and amount is not None:
+            nutrients[nutrient_id] = amount
+
+    #USDA nutrient IDs for calories
+    calories = nutrients.get(1008)
+
+    if calories is None:
+        calories = nutrients.get(2047)
+
+    if calories is None:
+        calories = nutrients.get(2048) 
+
+    multiplier = quantity_g / 100
+
+    #USDA nutrient IDs for macronutrients
+    protein = nutrients.get(1003)
+    carbs = nutrients.get(1005)
+    fats = nutrients.get(1004)
+
     return {
         "id": food.get("fdcId"),
         "name": food.get("description"),
-        "nutrients": food.get("foodNutrients", [])
+        "quantity_g": quantity_g,
+        "calories": round(calories * multiplier, 1) if calories is not None else None,
+        "protein": round(protein * multiplier, 1) if protein is not None else None,
+        "carbs": round(carbs * multiplier, 1) if carbs is not None else None,
+        "fats": round(fats * multiplier, 1) if fats is not None else None
     }
 
 
