@@ -39,6 +39,8 @@ def get_food_entry(entry_id:int, current_user:User = Depends(get_current_active_
 @router.post("/", response_model=FoodEntryResponse)
 def create_food_entry(food_entry:FoodEntryCreate, current_user:User = Depends(get_current_active_user), db:Session=Depends(get_db)):
 
+    selected_day = food_entry.date_logged or datetime.now(timezone.utc).date()
+
     new_food_entry = FoodEntry(
         user_id = current_user.id,
         name_of_food = food_entry.name_of_food,
@@ -46,7 +48,8 @@ def create_food_entry(food_entry:FoodEntryCreate, current_user:User = Depends(ge
         protein = food_entry.protein,
         carbs = food_entry.carbs,
         fats = food_entry.fats,
-        meal_type = food_entry.meal_type
+        meal_type = food_entry.meal_type,
+        date_logged = selected_day
     )
     db.add(new_food_entry)
     db.commit()
