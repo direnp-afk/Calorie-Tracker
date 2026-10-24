@@ -19,6 +19,8 @@ class FoodEntryResponse(BaseModel):
     fats:float
     meal_type:str
     time_created:datetime
+    fsc_id:int | None = None
+    quantity_g:float | None = None
 
     model_config = ConfigDict(from_attributes = True)
 

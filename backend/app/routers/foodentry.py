@@ -3,8 +3,9 @@ from typing import List
 from sqlalchemy.orm import Session
 from backend.app.models import FoodEntry, User
 from backend.app.database import get_db
-from backend.app.schemas import FoodEntryCreate, FoodEntryResponse
+from backend.app.schemas import FoodEntryCreate, FoodEntryResponse, FoodEntryFromSearch
 from backend.app.auth import get_current_active_user
+from backend.app.routers.foodsearch import get_usda_food_details
 from datetime import date, datetime, timezone, time, timedelta
 
 
@@ -53,6 +54,38 @@ def create_food_entry(food_entry:FoodEntryCreate, current_user:User = Depends(ge
     return new_food_entry
 
 
+
+@router.post("/from-search", response_model=FoodEntryResponse, status_code=status.HTTP_201_CREATED)
+def create_food_from_search(food:FoodEntryFromSearch, current_user:User = Depends(get_current_active_user), db:Session = Depends(get_db)):
+
+    food_details = get_usda_food_details(food.fdc_id, food.quantity_g)
+
+    if any(food_details[nutrient] is None for nutrient in ("calories", "protein", "carbs", "fats")):
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Nutritional information is incomplete for this food"
+        )
+
+    new_food_entry = FoodEntry(
+        user_id = current_user.id,
+        name_of_food = food_details["name"],
+        calories = round(food_details["calories"]),
+        protein = food_details["protein"],
+        carbs = food_details["carbs"],
+        fats = food_details["fats"],
+        meal_type = food.meal_type,
+        fdc_id = food.fdc_id,
+        quantity_g = food.quantity_g
+    )
+
+    db.add(new_food_entry)
+    db.commit()
+    db.refresh(new_food_entry)
+
+    return new_food_entry
+
+
+
 #allows currently logged in user to update any food entry based on entry_id
 @router.put("/{entry_id}", response_model=FoodEntryResponse)
 def update_food_entry(entry_id:int, food_entry:FoodEntryCreate, current_user:User = Depends(get_current_active_user), db:Session=Depends(get_db)):
@@ -84,6 +117,7 @@ def delete_food_entry(entry_id:int, current_user:User = Depends(get_current_acti
     db.commit()
 
     return{"message":"Food entry deleted."}
+
 
 
     
