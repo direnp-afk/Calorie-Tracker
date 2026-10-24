@@ -61,6 +61,8 @@ def create_food_entry(food_entry:FoodEntryCreate, current_user:User = Depends(ge
 @router.post("/from-search", response_model=FoodEntryResponse, status_code=status.HTTP_201_CREATED)
 def create_food_from_search(food:FoodEntryFromSearch, current_user:User = Depends(get_current_active_user), db:Session = Depends(get_db)):
 
+    selected_day = food.date_logged or datetime.now(timezone.utc).date()
+
     food_details = get_usda_food_details(food.fdc_id, food.quantity_g)
 
     if any(food_details[nutrient] is None for nutrient in ("calories", "protein", "carbs", "fats")):
@@ -78,7 +80,8 @@ def create_food_from_search(food:FoodEntryFromSearch, current_user:User = Depend
         fats = food_details["fats"],
         meal_type = food.meal_type,
         fdc_id = food.fdc_id,
-        quantity_g = food.quantity_g
+        quantity_g = food.quantity_g,
+        date_logged = selected_day
     )
 
     db.add(new_food_entry)
