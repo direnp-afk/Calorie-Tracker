@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float, DateTime, Boolean, ForeignKey
+from sqlalchemy import Column, Integer, String, Float, DateTime, Boolean, ForeignKey, Date
 from sqlalchemy.orm import relationship
 from backend.app.database import Base
 from datetime import datetime, timezone
@@ -18,6 +18,7 @@ class FoodEntry(Base):
     user = relationship("User", back_populates="food_entries")
     fdc_id = Column(Integer, nullable=True)
     quantity_g = Column(Float, nullable=True)
+    date_logeed = Column(Date, nullable=False)
 
 class GoalEntry(Base):
     __tablename__ = "nutrition_goals"
