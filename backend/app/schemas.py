@@ -40,10 +40,20 @@ class FoodEntryDateUpdate(BaseModel):
     date_logged:date
 
 class GoalEntryCreate(BaseModel):
-    calorie_target:int
-    protein_target:float
-    carb_target:float
-    fat_target:float
+    calorie_target:int = Field(gt=0)
+    protein_target:float = Field(gt=0)
+    carb_target:float = Field(gt=0)
+    fat_target:float = Field(gt=0)
+
+    @model_validator(mode="after")
+    def validate_macro_targets(self):
+
+        macro_calories = (self.protein_target * 4 + self.carb_target * 4 + self.fat_target * 9)
+
+        if abs(macro_calories - self.calorie_target) > 5:
+            raise ValueError("Macro targets must match calorie target")
+
+        return self
 
 class GoalEntryResponse(BaseModel):
     id:int
