@@ -3,7 +3,7 @@ from typing import List
 from sqlalchemy.orm import Session
 from backend.app.models import FoodEntry, User
 from backend.app.database import get_db
-from backend.app.schemas import FoodEntryCreate, FoodEntryResponse, FoodEntryFromSearch, FoodQuantityUpdate
+from backend.app.schemas import FoodEntryCreate, FoodEntryResponse, FoodEntryFromSearch, FoodQuantityUpdate, FoodEntryDateUpdate
 from backend.app.auth import get_current_active_user
 from backend.app.routers.foodsearch import get_usda_food_details
 from datetime import date, datetime, timezone, time, timedelta
@@ -108,6 +108,20 @@ def update_food_quantity(entry_id:int, food:FoodQuantityUpdate, current_user:Use
     db_food_entry.carbs = food_details["carbs"]
     db_food_entry.fats = food_details["fats"]
 
+    db.commit()
+    db.refresh(db_food_entry)
+    return db_food_entry
+
+
+@router.patch("/{entry_id}/date", response_model=FoodEntryResponse)
+def update_food_date(entry_id:int, food:FoodEntryDateUpdate, current_user:User = Depends(get_current_active_user), db:Session = Depends(get_db)):
+    
+    db_food_entry = db.query(FoodEntry).filter(FoodEntry.id == entry_id,FoodEntry.user_id == current_user.id).first()
+
+    if not db_food_entry:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Food entry not found")
+
+    db_food_entry.date_logged = food.date_logged
     db.commit()
     db.refresh(db_food_entry)
     return db_food_entry
