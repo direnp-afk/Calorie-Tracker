@@ -86,6 +86,20 @@ def get_goal_recommendation(current_user:User = Depends(get_current_active_user)
     if calorie_target <= 0:
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Invalid calorie target")
 
+    if profile.fitness_goal == "lose":
+        if calorie_target < 1200 or tdee - calorie_target > 750:
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail="Calorie target is too low or weight loss is too aggressive. Choose a slower weekly rate."
+            )
+
+    elif profile.fitness_goal == "gain":
+        if calorie_target > tdee * 1.2:
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail="Calorie surplus is too high. Choose a slower weekly rate."
+            )
+
     macros = calculate_macros(calorie_target)
 
     estimated_date = estimate_goal_date(
