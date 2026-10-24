@@ -66,14 +66,14 @@ class GoalEntryResponse(BaseModel):
 
 class UserCreate(BaseModel):
     email:str
-    password:str
+    password:str = Field(min_length=8)
 
 class UserUpdate(BaseModel):
     email:str
 
 class PasswordChange(BaseModel):
     current_password:str
-    new_password:str
+    new_password:str = Field(min_length=8)
 
 class UserResponse(BaseModel):
     id:int
