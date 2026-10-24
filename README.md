@@ -6,9 +6,6 @@ A calorie and nutrition tracking REST API built with Python and FastAPI. Users c
 
 I built the backend first to focus on authentication, database design, nutrition calculations and integrating an external food database. The API is functional and can currently be used through FastAPI's interactive documentation.
 
-## API Demonstration
-
-
 
 ## API Demonstration
 
