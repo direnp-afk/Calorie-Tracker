@@ -21,3 +21,9 @@ def test_short_password_rejected(client):
         "/auth/register", json={"email": "sam@example.test", "password": "abc"}
     )
     assert response.status_code == 422
+
+
+def test_login_required(client):
+    response = client.get("/users/me")
+    assert response.status_code == 401
+
