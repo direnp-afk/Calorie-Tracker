@@ -46,7 +46,7 @@ def verify_token(token:str) -> TokenData:
         #Rejects tokens that dont identify a user
         if user_id is None:
             raise HTTPException(
-                status_code= status.HTTP_401_UNAUTHORISED,
+                status_code= status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid credentials, could not verify",
                 headers={"WWW-Authenticate":"Bearer"}
             )
@@ -54,7 +54,7 @@ def verify_token(token:str) -> TokenData:
     
     except (jwt.PyJWTError, TypeError, ValueError):
         raise HTTPException(
-            status_code= status.HTTP_401_UNAUTHORISED,
+            status_code= status.HTTP_401_UNAUTHORIZED,
             detail="Invalid credentials, could not verify",
             headers={"WWW-Authenticate":"Bearer"}
         )
