@@ -9,6 +9,7 @@ class FoodEntryCreate(BaseModel):
     carbs:float
     fats:float
     meal_type:str
+    date_logged:date | None = None
 
 class FoodEntryResponse(BaseModel):
     id:int
@@ -21,8 +22,22 @@ class FoodEntryResponse(BaseModel):
     time_created:datetime
     fsc_id:int | None = None
     quantity_g:float | None = None
+    date_logged:date
 
     model_config = ConfigDict(from_attributes = True)
+
+class FoodEntryFromSearch(BaseModel):
+    fdc_id:int
+    quantity_g:float = Field(gt=0)
+    meal_type: Literal["breakfast", "lunch", "dinner", "snacks"]
+    date_logged:date | None = None
+
+
+class FoodQuantityUpdate(BaseModel):
+    quantity_g:float = Field(gt=0)
+
+class FoodEntryDateUpdate(BaseModel):
+    date_logged:date
 
 class GoalEntryCreate(BaseModel):
     calorie_target:int
@@ -76,10 +91,10 @@ class UserProfileCreate(BaseModel):
     age:int = Field(gt=0, lt= 120)
     weight_kg:float = Field(gt=0)
     height_cm:float = Field(gt=0)
-    activity_level: Literal["sedentary", "lightly_active", "moderately_active", "very_active"]
-    fitness_goal: Literal["lose", "maintain", "gain"]
-    goal_weight_kg: float | None = Field(default=None, gt=0)
-    weekly_weight_change_kg: Literal["0.15", "0.25", "0.375", "0.5", "0.625", "0.75", "0.875", "1.0"] | None = None
+    activity_level:Literal["sedentary", "lightly_active", "moderately_active", "very_active"]
+    fitness_goal:Literal["lose", "maintain", "gain"]
+    goal_weight_kg:float | None = Field(default=None, gt=0)
+    weekly_weight_change_kg:Literal["0.15", "0.25", "0.375", "0.5", "0.625", "0.75", "0.875", "1.0"] | None = None
 
     @model_validator(mode="after")
     def validate_weight_goal(self):
@@ -140,14 +155,3 @@ class DailySummaryResponse(BaseModel):
     remaining:NutritionTotalsResponse
     meals:dict[str, NutritionTotalsResponse]
 
-
-class FoodEntryFromSearch(BaseModel):
-    fdc_id: int
-    quantity_g: float = Field(gt=0)
-    meal_type: Literal["breakfast", "lunch", "dinner", "snacks"]
-
-
-class FoodQuantityUpdate(BaseModel):
-    quantity_g: float = Field(gt=0)
-
-    
