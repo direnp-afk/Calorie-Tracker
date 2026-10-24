@@ -107,6 +107,28 @@ def get_food_details(fdc_id:int,quantity_g:float = Query(default=100, gt=0), cur
     carbs = nutrients.get(1005)
     fats = nutrients.get(1004)
 
+
+    micronutrient_ids = {
+        1079: ("fiber", "g"),
+        1087: ("calcium", "mg"),
+        1089: ("iron", "mg"),
+        1092: ("potassium", "mg"),
+        1093: ("sodium", "mg"),
+        1162: ("vitamin_c", "mg"),
+        1114: ("vitamin_d", "µg")
+    }
+
+    micronutrients = {}
+
+    for nutrient_id, (name, unit) in micronutrient_ids.items():
+        amount = nutrients.get(nutrient_id)
+
+        if amount is not None:
+            micronutrients[name] = {
+                "amount": round(amount * multiplier, 2),
+                "unit": unit
+            }
+    
     return {
         "id": food.get("fdcId"),
         "name": food.get("description"),
@@ -115,7 +137,8 @@ def get_food_details(fdc_id:int,quantity_g:float = Query(default=100, gt=0), cur
         "calories": round(calories * multiplier, 1) if calories is not None else None,
         "protein": round(protein * multiplier, 1) if protein is not None else None,
         "carbs": round(carbs * multiplier, 1) if carbs is not None else None,
-        "fats": round(fats * multiplier, 1) if fats is not None else None
+        "fats": round(fats * multiplier, 1) if fats is not None else None,
+        "micronutrients": micronutrients
     }
 
 
