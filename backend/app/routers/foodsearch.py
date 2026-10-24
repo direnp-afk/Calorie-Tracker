@@ -60,6 +60,29 @@ def get_food_details(fdc_id:int,quantity_g:float = Query(default=100, gt=0), cur
         raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY, detail="Food details unavailable")
 
     food = response.json()
+
+    portions = [{"label": "Grams (g)", "gram_weight": 1}]
+
+    for portion in food.get("foodPortions", []):
+        gram_weight = portion.get("gramWeight")
+
+        if gram_weight is None or gram_weight <= 0:
+            continue
+
+        label = portion.get("portionDescription") or portion.get("modifier")
+
+        if not label:
+            measure = portion.get("measureUnit") or {}
+            unit = measure.get("name")
+            amount = portion.get("amount", 1)
+            label = f"{amount} {unit}" if unit else "Portion"
+
+        portions.append({
+            "label": f"{label} ({gram_weight:g} g)",
+            "gram_weight": gram_weight
+        })
+
+
     nutrients = {}
     for item in food.get("foodNutrients", []):
         nutrient_id = item.get("nutrient", {}).get("id")
@@ -88,6 +111,7 @@ def get_food_details(fdc_id:int,quantity_g:float = Query(default=100, gt=0), cur
         "id": food.get("fdcId"),
         "name": food.get("description"),
         "quantity_g": quantity_g,
+        "portions": portions,
         "calories": round(calories * multiplier, 1) if calories is not None else None,
         "protein": round(protein * multiplier, 1) if protein is not None else None,
         "carbs": round(carbs * multiplier, 1) if carbs is not None else None,
