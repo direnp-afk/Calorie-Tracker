@@ -145,3 +145,9 @@ class FoodEntryFromSearch(BaseModel):
     fdc_id: int
     quantity_g: float = Field(gt=0)
     meal_type: Literal["breakfast", "lunch", "dinner", "snacks"]
+
+
+class FoodQuantityUpdate(BaseModel):
+    quantity_g: float = Field(gt=0)
+
+    
