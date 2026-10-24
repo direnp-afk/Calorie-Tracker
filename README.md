@@ -1,185 +1,148 @@
-# Calorie & Nutrition Tracking Application
+# Calorie Tracker — Backend API
 
-A full-stack calorie and macronutrient tracking application currently in development, designed to help users log their daily food intake, manage nutritional goals, and monitor their progress.
+**Status:** Backend complete | React frontend planned
 
-The project is being built with a Python/FastAPI backend and a planned React frontend, with a focus on RESTful API development, database design, authentication, and maintainable software architecture.
+A calorie and nutrition tracking REST API built with Python and FastAPI. Users can create an account, set nutrition goals, log meals and track their daily calorie and macronutrient intake.
 
-## Technologies
-
-**Backend:** Python, FastAPI, SQLAlchemy, Pydantic
-
-**Database:** SQLite
-
-**Authentication:** JWT, OAuth2, bcrypt (integration in progress)
-
-**Frontend:** React (planned)
-
-**Version Control:** Git and GitHub
+I built the backend first to focus on authentication, database design, nutrition calculations and integrating an external food database. The API is functional and can currently be used through FastAPI's interactive documentation.
 
 ## Features
 
-### Implemented Backend Features
+**Accounts and profiles**
+- Register and log in with JWT-based authentication and Argon2 password hashing.
+- Update account details, change passwords and delete an account.
+- Save a personal profile with weight, height, age, activity level and fitness goal.
+- Restrict profile, goal and food-entry data to the authenticated user.
 
-- RESTful endpoints supporting CRUD operations for food entries and nutritional goals.
-- SQLite database integration using SQLAlchemy ORM.
-- Pydantic schemas for request validation and structured API responses.
-- Individual food logging with calorie, protein, carbohydrate and fat values.
-- Food categorisation into breakfast, lunch, dinner and snacks.
-- Filtering of food entries by meal category.
-- Database-generated identifiers and timestamps.
-- HTTP error handling for missing records.
-- Interactive API documentation and endpoint testing through FastAPI Swagger UI.
+**Nutrition goals**
+- Calculate estimated resting metabolic rate (RMR) using the Mifflin–St Jeor equation and total daily energy expenditure (TDEE) using activity multipliers.
+- Recommend daily calorie and macronutrient targets for weight loss, maintenance or gain.
+- Estimate a target date based on goal weight and selected weekly rate of change.
+- Set or update calorie and macro targets manually, with validation to check that their energy totals are consistent.
+- Reject automatic recommendations that exceed the application's basic calorie-deficit or surplus limits.
 
-### In Development
+**Food diary**
+- Search foods using the USDA FoodData Central API.
+- View calories, macronutrients, available micronutrients and portion information.
+- Log USDA foods by weight, or manually add foods that are not in the database.
+- Update logged quantities for USDA foods, edit manual entries, change log dates and delete entries.
+- Retrieve food entries for a selected date and view totals by meal type.
 
-- User registration and login using JWT authentication.
-- Secure password hashing and token verification.
-- User-specific food entries and nutritional goals.
-- Personal fitness profiles containing measurements and activity information.
+**Daily summary**
+- Compare calories, protein, carbohydrates and fats consumed against saved targets.
+- See remaining targets and a breakdown across breakfast, lunch, dinner and snacks.
 
-### Planned Features
+## Tech stack
 
-- Automatic estimation of calorie and macronutrient targets from user profile information.
-- Manual customisation of nutritional goals.
-- Daily calorie and macronutrient summaries.
-- Remaining daily calories and macros compared with targets.
-- React dashboard for logging food and viewing progress.
-- Food search using an external nutrition API.
-- Barcode-based food lookup and reusable saved meals.
-- Automated testing and deployment.
+| Area | Technologies |
+| --- | --- |
+| Language | Python |
+| API | FastAPI, REST, Pydantic |
+| Database | SQLite, SQLAlchemy ORM |
+| Authentication | JWT (PyJWT), OAuth2 password flow, pwdlib / Argon2 |
+| External data | USDA FoodData Central API, Requests |
+| Testing | pytest, FastAPI TestClient, HTTPX |
+| Other tools | Git, GitHub, environment variables with python-dotenv, Swagger UI / OpenAPI |
 
-## Project Structure
+## Project structure
 
 ```text
-Calorie-Tracking-Project/
+Calorie-Tracker/
 ├── backend/
 │   └── app/
-│       ├── main.py
-│       ├── database.py
-│       ├── models.py
-│       ├── schemas.py
-│       ├── config.py
-│       ├── auth.py
-│       └── routers/
-├── frontend/              # Planned React application
-├── .gitignore
-├── README.md
-└── requirements.txt
+│       ├── routers/          # Authentication, users, profiles, goals, foods and summaries
+│       ├── services/
+│       │   └── nutrition.py  # Nutrition calculations
+│       ├── auth.py           # Password hashing and JWT utilities
+│       ├── config.py         # Environment variable configuration
+│       ├── database.py       # SQLAlchemy database setup
+│       ├── main.py           # FastAPI application and routers
+│       ├── models.py         # Database models
+│       └── schemas.py        # Request and response schemas
+├── tests/                    # pytest suite
+├── pytest.ini
+├── requirements.txt
+└── README.md
 ```
 
-The backend follows a modular structure:
+## Getting started
 
-- `main.py` — FastAPI application setup and router registration.
-- `database.py` — database engine and session management.
-- `models.py` — SQLAlchemy database models.
-- `schemas.py` — Pydantic request and response schemas.
-- `config.py` — application configuration.
-- `auth.py` — authentication and security functions.
-- `routers/` — API endpoints organised by resource.
+**Requirements:** Python 3.10+ and a free USDA FoodData Central API key.
 
-## Running the Backend Locally
+1. Clone the repository and open a terminal in the project root.
+2. Install the dependencies:
 
-### 1. Clone the repository
+   ```bash
+   python -m pip install -r requirements.txt
+   ```
 
+3. Create a `.env` file in the project root:
 
-### 2. Create a virtual environment
+   ```dotenv
+   SECRET_KEY=replace_with_a_long_random_secret
+   USDA_API_KEY=your_usda_api_key
+   ```
+
+   The `.env` file is excluded from version control. Never commit real API keys or secrets.
+
+4. Start the API:
+
+   ```bash
+   python -m uvicorn backend.app.main:calorie_app --reload
+   ```
+
+5. Open **http://127.0.0.1:8000/docs** to use the interactive API documentation.
+
+The SQLite database is created automatically on startup if it does not already exist.
+
+### Trying the API
+
+Register an account with `POST /auth/register`, then log in using `POST /auth/token`. In Swagger UI, select **Authorize** and enter your account credentials. You can then create a profile, request a goal recommendation, save your targets and start logging food.
+
+## Main API endpoints
+
+| Method | Endpoint | Purpose |
+| --- | --- | --- |
+| POST | `/auth/register` | Create an account |
+| POST | `/auth/token` | Log in and receive a JWT |
+| GET / PUT / DELETE | `/users/me` | View, edit or delete your account |
+| POST / GET / PUT | `/profile/me` | Create, view or update your profile |
+| GET | `/goals/recommendation` | Calculate suggested targets and estimated goal date |
+| POST | `/goals/` | Save nutrition targets |
+| GET / PUT | `/goals/me` | View or update saved targets |
+| GET | `/foods/search?query=banana` | Search the USDA database |
+| GET | `/foods/{fdc_id}?quantity_g=150` | View scaled food nutrition and portions |
+| POST | `/food_entries/` | Log food manually |
+| POST | `/food_entries/from-search` | Log a USDA food by weight |
+| GET | `/food_entries/me?day=2026-10-24` | View entries for a date |
+| PATCH | `/food_entries/{entry_id}/quantity` | Update the weight of a USDA entry |
+| PATCH | `/food_entries/{entry_id}/date` | Move a food entry to another date |
+| GET | `/summary/daily?day=2026-10-24` | View daily totals, remaining targets and meals |
+
+Food entries can also be viewed individually, manually edited or deleted. The complete list of routes and request schemas is available at `/docs`.
+
+## Testing
+
+The backend has **15 passing pytest tests** covering key nutrition calculations and API behaviour, including authentication, goal validation, food logging and access controls between users.
+
+Tests use an in-memory SQLite database rather than the application's database. USDA responses are mocked where needed, so tests do not depend on live API calls.
+
+Run from the project root:
 
 ```bash
-python -m venv .venv
+python -m pytest -v
 ```
 
-On Windows PowerShell:
+See [`README_TEST.md`](README_TEST.md) for more detail about the test setup and planned additional coverage.
 
-```powershell
-.\.venv\Scripts\Activate.ps1
-```
+## Next steps
 
-### 3. Install dependencies
+The backend is complete for the first version, with the following improvements planned:
 
-```bash
-pip install -r requirements.txt
-```
+- **React frontend:** onboarding, food search, meal diary, calorie/macro dashboard and account settings.
+- **Deployment:** make the API and, later, the frontend available online.
+- **Database migrations:** introduce Alembic for schema changes without recreating the database.
+- **More tests and validation:** extend coverage for account changes, error handling, edge cases and external API failures.
+- **Nutrition refinements:** improve recommendation safeguards and estimates as the project develops.
 
-### 4. Configure environment variables
-
-Create a `.env` file in the project root:
-
-```env
-SECRET_KEY=your_generated_secret_key
-```
-
-Generate a secure secret using:
-
-```bash
-python -c "import secrets; print(secrets.token_urlsafe(32))"
-```
-
-The `.env` file is excluded from version control to protect sensitive configuration.
-
-### 5. Start the backend
-
-From the project root:
-
-```bash
-python -m uvicorn backend.app.main:calorie_app --reload
-```
-
-### 6. Open the API documentation
-
-Visit:
-
-http://127.0.0.1:8000/docs
-
-FastAPI provides interactive Swagger documentation for exploring and testing the available endpoints.
-
-## Example API Requests
-
-The food-entry API supports operations such as:
-
-```text
-GET     /food_entries
-GET     /food_entries/{entry_id}
-POST    /food_entries
-PUT     /food_entries/{entry_id}
-DELETE  /food_entries/{entry_id}
-```
-
-Entries can also be filtered by meal category:
-
-```text
-GET /food_entries?of_meal_type=breakfast
-```
-
-Example food-entry request body:
-
-```json
-{
-  "name_of_food": "Banana",
-  "calories": 105,
-  "protein": 1.3,
-  "carbs": 27,
-  "fats": 0.3,
-  "meal_type": "breakfast"
-}
-```
-
-## Development Goals
-
-The aim is to develop a complete, secure full-stack application while gaining practical experience with:
-
-- REST API design and development.
-- Relational databases and ORM integration.
-- Authentication and authorisation.
-- Frontend/backend integration.
-- Automated testing and deployment.
-- Git-based version control and incremental development.
-
-## Project Status
-
-**In active development.**
-
-<<<<<<< HEAD
-The core food-entry and nutritional-goal backend functionality has been implemented. The current focus is authentication and personalised user data, followed by nutritional calculations and frontend development.
-=======
-The core food-entry and nutritional-goal backend functionality has been implemented. The current focus is authentication and personalised user data, followed by nutritional calculations and frontend development.
->>>>>>> 1267c2433ab23db88480e9aecc55b7a40a98d2ee
+*Calorie and weight-change recommendations are estimates, not personalised medical advice.*
