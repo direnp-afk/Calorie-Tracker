@@ -6,6 +6,32 @@ A calorie and nutrition tracking REST API built with Python and FastAPI. Users c
 
 I built the backend first to focus on authentication, database design, nutrition calculations and integrating an external food database. The API is functional and can currently be used through FastAPI's interactive documentation.
 
+## Features
+
+**Accounts and profiles**
+- Register and log in with JWT-based authentication and Argon2 password hashing.
+- Update account details, change passwords and delete an account.
+- Save a personal profile with weight, height, age, activity level and fitness goal.
+- Restrict profile, goal and food-entry data to the authenticated user.
+
+**Nutrition goals**
+- Calculate estimated resting metabolic rate (RMR) using the Mifflin–St Jeor equation and total daily energy expenditure (TDEE) using activity multipliers.
+- Recommend daily calorie and macronutrient targets for weight loss, maintenance or gain.
+- Estimate a target date based on goal weight and selected weekly rate of change.
+- Set or update calorie and macro targets manually, with validation to check that their energy totals are consistent.
+- Reject automatic recommendations that exceed the application's basic calorie-deficit or surplus limits.
+
+**Food diary**
+- Search foods using the USDA FoodData Central API.
+- View calories, macronutrients, available micronutrients and portion information.
+- Log USDA foods by weight, or manually add foods that are not in the database.
+- Update logged quantities for USDA foods, edit manual entries, change log dates and delete entries.
+- Retrieve food entries for a selected date and view totals by meal type.
+
+**Daily summary**
+- Compare calories, protein, carbohydrates and fats consumed against saved targets.
+- See remaining targets and a breakdown across breakfast, lunch, dinner and snacks.
+
 
 ## API Demonstration
 
@@ -45,33 +71,6 @@ I built the backend first to focus on authentication, database design, nutrition
   <sub>Personalised calorie and macro recommendations with an estimated goal date.</sub>
 </p>
 
-
-
-## Features
-
-**Accounts and profiles**
-- Register and log in with JWT-based authentication and Argon2 password hashing.
-- Update account details, change passwords and delete an account.
-- Save a personal profile with weight, height, age, activity level and fitness goal.
-- Restrict profile, goal and food-entry data to the authenticated user.
-
-**Nutrition goals**
-- Calculate estimated resting metabolic rate (RMR) using the Mifflin–St Jeor equation and total daily energy expenditure (TDEE) using activity multipliers.
-- Recommend daily calorie and macronutrient targets for weight loss, maintenance or gain.
-- Estimate a target date based on goal weight and selected weekly rate of change.
-- Set or update calorie and macro targets manually, with validation to check that their energy totals are consistent.
-- Reject automatic recommendations that exceed the application's basic calorie-deficit or surplus limits.
-
-**Food diary**
-- Search foods using the USDA FoodData Central API.
-- View calories, macronutrients, available micronutrients and portion information.
-- Log USDA foods by weight, or manually add foods that are not in the database.
-- Update logged quantities for USDA foods, edit manual entries, change log dates and delete entries.
-- Retrieve food entries for a selected date and view totals by meal type.
-
-**Daily summary**
-- Compare calories, protein, carbohydrates and fats consumed against saved targets.
-- See remaining targets and a breakdown across breakfast, lunch, dinner and snacks.
 
 ## Tech stack
 
