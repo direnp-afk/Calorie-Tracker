@@ -19,13 +19,10 @@ def get_daily_summary(day:date | None = None, current_user:User = Depends(get_cu
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nutrition goals not found")
 
     selected_day = day or datetime.now(timezone.utc).date()
-    start = datetime.combine(selected_day, time.min, tzinfo=timezone.utc)
-    end = start + timedelta(days=1)
 
     food_entries = db.query(FoodEntry).filter(
         FoodEntry.user_id == current_user.id,
-        FoodEntry.time_created >= start,
-        FoodEntry.time_created < end
+        FoodEntry.date_logged == selected_day
     ).all()
 
     calories_consumed = sum(entry.calories for entry in food_entries)
