@@ -20,7 +20,7 @@ os.environ["USDA_API_KEY"] = "unused-test-api-key"
 
 @pytest.fixture
 def client():
-    #Recreate a fresh, in-memory SQLite database for each test.
+    #Recreate a fresh, in-memory SQLite database for each test
     engine = create_engine(
         "sqlite://", connect_args={"check_same_thread": False}, poolclass=StaticPool
     )

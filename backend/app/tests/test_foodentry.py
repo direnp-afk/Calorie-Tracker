@@ -26,3 +26,33 @@ def test_users_cannot_read_each_others_food(client, make_user):
     response = client.get(f"/food_entries/{entry['id']}", headers=testuser2)
     assert response.status_code == 404
 
+
+def test_usda_food_quantity_changes_macros(client, make_user, monkeypatch):
+    headers = make_user()
+
+    #Fake USDA data, no API key or internet request is used
+    def fake_usda_details(fdc_id, quantity_g):
+        multiplier = quantity_g / 100
+        return {
+            "name": "Banana", "calories": 100 * multiplier,
+            "protein": 2 * multiplier, "carbs": 20 * multiplier,
+            "fats": 1 * multiplier,
+        }
+
+    monkeypatch.setattr(foodentry, "get_usda_food_details", fake_usda_details)
+
+    response = client.post(
+        "/food_entries/from-search",
+        json={"fdc_id": 123, "quantity_g": 100, "meal_type": "snacks"},
+        headers=headers,
+    )
+    assert response.status_code == 201
+    entry_id = response.json()["id"]
+
+    response = client.patch(
+        f"/food_entries/{entry_id}/quantity",
+        json={"quantity_g": 200}, headers=headers,
+    )
+    assert response.status_code == 200
+    assert response.json()["calories"] == 200
+    assert response.json()["carbs"] == 40
