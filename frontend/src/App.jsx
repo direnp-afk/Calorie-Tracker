@@ -1,4 +1,4 @@
-
+import ProfilePage from "./pages/ProfilePage";
 import { useEffect, useState } from "react";
 import { loginUser, registerUser, verifyUser } from "./api/client";
 import "./App.css";
@@ -112,15 +112,7 @@ function App() {
             <p>Checking your session...</p>
           </section>
         ) : user ? (
-          <section className="dashboard-preview">
-            <h3>Welcome back!</h3>
-            <p>Logged in as {user.email}</p>
-            <p>Your dashboard will appear here.</p>
-
-            <button onClick={handleLogout} className="secondary-button">
-              Log out
-            </button>
-          </section>
+          <ProfilePage email={user.email} onLogout={handleLogout} />
         ) : (
           <section className="login-card">
             <h3>{mode === "login" ? "Log in" : "Create an account"}</h3>
