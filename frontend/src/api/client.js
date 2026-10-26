@@ -158,7 +158,7 @@ export async function saveUserGoal(goalData, hasGoal) {
   const token = localStorage.getItem("calorie_tracker_token");
 
   const response = await fetch(
-    hasGoal ? "/api/goals/me" : "/api/goals/",
+    hasGoal ? "/api/goals/me" : "/api/goals",
     {
       method: hasGoal ? "PUT" : "POST",
       headers: {
