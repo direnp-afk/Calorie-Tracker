@@ -32,21 +32,88 @@ h1 {
   margin: 12px 0;
 }
 
-.description {
+.description,
+.form-description {
   color: #999fa5;
   line-height: 1.6;
 }
 
+.login-card,
 .dashboard-preview {
-  margin-top: 48px;
+  max-width: 480px;
+  margin-top: 40px;
   padding: 32px;
   background-color: #1a1d1f;
   border: 1px solid #303438;
   border-radius: 10px;
 }
 
+.login-card h3,
 .dashboard-preview h3 {
   margin-top: 0;
+  font-size: 22px;
+}
+
+.login-card form {
+  display: flex;
+  flex-direction: column;
+  margin-top: 28px;
+}
+
+.login-card label {
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.login-card input {
+  padding: 12px 14px;
+  margin-bottom: 20px;
+  background-color: #111315;
+  border: 1px solid #383d40;
+  border-radius: 7px;
+  color: #e8e8e8;
+  font-size: 14px;
+}
+
+.login-card input:focus {
+  outline: none;
+  border-color: #86b8a0;
+}
+
+button {
+  padding: 13px 18px;
+  background-color: #86b8a0;
+  color: #111315;
+  border: none;
+  border-radius: 7px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #a0ceb6;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.secondary-button {
+  margin-top: 16px;
+  background-color: #303438;
+  color: #e8e8e8;
+}
+
+.secondary-button:hover {
+  background-color: #3c4246;
+}
+
+.error-message {
+  color: #ed9292;
+  font-size: 13px;
+  margin: 0 0 16px;
 }
 
 .dashboard-preview p {
@@ -66,6 +133,7 @@ h1 {
     font-size: 34px;
   }
 
+  .login-card,
   .dashboard-preview {
     padding: 24px;
   }
