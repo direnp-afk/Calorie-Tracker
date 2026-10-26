@@ -154,7 +154,7 @@ function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <h2>Calorie Tracker</h2>
+        <h2>NutraLog</h2>
       </header>
 
       <main className="app-main">
