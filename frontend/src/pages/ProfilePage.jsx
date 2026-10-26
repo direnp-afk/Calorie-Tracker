@@ -13,7 +13,7 @@ const emptyProfile = {
   weekly_weight_change_kg: "",
 };
 
-function ProfilePage({ email, onLogout }) {
+function ProfilePage({ email, onLogout, onOpenGoals }) {
   const [profile, setProfile] = useState(null);
   const [form, setForm] = useState(emptyProfile);
   const [editing, setEditing] = useState(true);
@@ -40,7 +40,7 @@ function ProfilePage({ email, onLogout }) {
             height_cm: String(savedProfile.height_cm),
             activity_level: savedProfile.activity_level,
             fitness_goal: savedProfile.fitness_goal,
-            goal_weight_kg: savedProfile.goal_weight_kg ?? "",
+            goal_weight_kg: savedProfile.goal_weight_kg?.toString() ?? "",
             weekly_weight_change_kg:
               savedProfile.weekly_weight_change_kg?.toString() ?? "",
           });
@@ -130,6 +130,7 @@ function ProfilePage({ email, onLogout }) {
         <div>
           <p className="subtitle">YOUR ACCOUNT</p>
           <h1>{profile ? "Your profile" : "Set up your profile"}</h1>
+
           <p className="description">
             {profile
               ? `Signed in as ${email}`
@@ -324,14 +325,28 @@ function ProfilePage({ email, onLogout }) {
             <h3>Profile details</h3>
 
             <div className="profile-details">
-              <p><strong>Gender:</strong> {profile.gender.replaceAll("_", " ")}</p>
-              <p><strong>Age:</strong> {profile.age}</p>
-              <p><strong>Weight:</strong> {profile.weight_kg} kg</p>
-              <p><strong>Height:</strong> {profile.height_cm} cm</p>
+              <p>
+                <strong>Gender:</strong>{" "}
+                {profile.gender.replaceAll("_", " ")}
+              </p>
+
+              <p>
+                <strong>Age:</strong> {profile.age}
+              </p>
+
+              <p>
+                <strong>Weight:</strong> {profile.weight_kg} kg
+              </p>
+
+              <p>
+                <strong>Height:</strong> {profile.height_cm} cm
+              </p>
+
               <p>
                 <strong>Activity:</strong>{" "}
                 {profile.activity_level.replaceAll("_", " ")}
               </p>
+
               <p>
                 <strong>Goal:</strong> {profile.fitness_goal}
               </p>
@@ -342,6 +357,7 @@ function ProfilePage({ email, onLogout }) {
                     <strong>Target weight:</strong>{" "}
                     {profile.goal_weight_kg} kg
                   </p>
+
                   <p>
                     <strong>Weekly change:</strong>{" "}
                     {profile.weekly_weight_change_kg} kg/week
@@ -350,18 +366,23 @@ function ProfilePage({ email, onLogout }) {
               )}
             </div>
 
-            <button
-              onClick={() => {
-                setError("");
-                setEditing(true);
-              }}
-            >
-              Edit profile
-            </button>
+            <div className="profile-actions">
+              <button
+                onClick={() => {
+                  setError("");
+                  setEditing(true);
+                }}
+              >
+                Edit profile
+              </button>
 
-            <p className="profile-next">
-              Profile saved. Nutrition goal setup will be added next.
-            </p>
+              <button
+                className="secondary-button"
+                onClick={onOpenGoals}
+              >
+                Nutrition goals
+              </button>
+            </div>
           </>
         )}
       </section>

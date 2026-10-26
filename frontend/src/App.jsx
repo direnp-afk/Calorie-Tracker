@@ -1,4 +1,5 @@
 import ProfilePage from "./pages/ProfilePage";
+import GoalsPage from "./pages/GoalsPage";
 import { useEffect, useState } from "react";
 import { loginUser, registerUser, verifyUser } from "./api/client";
 import "./App.css";
@@ -15,6 +16,7 @@ function App() {
   const [checkingSession, setCheckingSession] = useState(
     Boolean(localStorage.getItem(TOKEN_KEY))
   );
+  const [page, setPage] = useState("profile");
 
   useEffect(() => {
     const savedToken = localStorage.getItem(TOKEN_KEY);
@@ -84,6 +86,7 @@ function App() {
     setPassword("");
     setMode("login");
     setError("");
+    setPage("profile");
   }
 
   function switchMode() {
@@ -112,7 +115,15 @@ function App() {
             <p>Checking your session...</p>
           </section>
         ) : user ? (
-          <ProfilePage email={user.email} onLogout={handleLogout} />
+          page === "goals" ? (
+            <GoalsPage onBack={() => setPage("profile")} />
+          ) : (
+            <ProfilePage
+              email={user.email}
+              onLogout={handleLogout}
+              onOpenGoals={() => setPage("goals")}
+            />
+          )
         ) : (
           <section className="login-card">
             <h3>{mode === "login" ? "Log in" : "Create an account"}</h3>

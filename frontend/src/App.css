@@ -126,3 +126,143 @@
     grid-template-columns: 1fr;
   }
 }
+
+
+/* Nutrition goals */
+
+.goal-card {
+  margin-top: 36px;
+  padding: 32px;
+  background-color: #1a1d1f;
+  border: 1px solid #303438;
+  border-radius: 10px;
+}
+
+.goal-card h3 {
+  margin: 0 0 24px;
+  font-size: 20px;
+}
+
+.goal-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.goal-option {
+  padding: 24px;
+  background-color: #111315;
+  border: 1px solid #303438;
+  border-radius: 8px;
+}
+
+.goal-option h4 {
+  margin: 0 0 12px;
+}
+
+.goal-option p,
+.goal-note {
+  color: #999fa5;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.goal-option button {
+  margin-top: 18px;
+}
+
+.goal-calories {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 24px;
+  background-color: #111315;
+  border: 1px solid #303438;
+  border-radius: 8px;
+}
+
+.goal-calories span,
+.goal-macros span {
+  color: #999fa5;
+  font-size: 14px;
+}
+
+.goal-calories strong {
+  font-size: 32px;
+  font-weight: 600;
+}
+
+.goal-macros {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.goal-macros div {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px;
+  background-color: #111315;
+  border: 1px solid #303438;
+  border-radius: 8px;
+}
+
+.goal-macros strong {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.goal-preview {
+  margin-top: 24px;
+  padding: 20px;
+  border: 1px solid #303438;
+  border-radius: 8px;
+}
+
+.goal-preview h4 {
+  margin: 0 0 16px;
+}
+
+.goal-preview p {
+  color: #aeb4b7;
+  margin: 10px 0;
+}
+
+.goal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.goal-actions .secondary-button {
+  margin-top: 0;
+}
+
+.goal-error {
+  margin-top: 20px;
+}
+
+@media (max-width: 600px) {
+  .goal-card {
+    padding: 24px;
+  }
+
+  .goal-options {
+    grid-template-columns: 1fr;
+  }
+
+  .goal-macros {
+    gap: 8px;
+  }
+
+  .goal-macros div {
+    padding: 14px 10px;
+  }
+
+  .goal-macros strong {
+    font-size: 16px;
+  }
+}

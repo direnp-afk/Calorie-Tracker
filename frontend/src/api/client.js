@@ -109,3 +109,75 @@ export async function saveUserProfile(profileData, hasProfile) {
 
   return await response.json();
 }
+
+
+
+export async function getUserGoal() {
+  const token = localStorage.getItem("calorie_tracker_token");
+
+  const response = await fetch("/api/goals/me", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (response.status === 404) {
+    return null;
+  }
+
+  if (!response.ok) {
+    throw new Error("Could not load your nutrition goals.");
+  }
+
+  return await response.json();
+}
+
+export async function getGoalRecommendation() {
+  const token = localStorage.getItem("calorie_tracker_token");
+
+  const response = await fetch("/api/goals/recommendation", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    const data = await response.json().catch(() => null);
+
+    throw new Error(
+      typeof data?.detail === "string"
+        ? data.detail
+        : "Could not calculate your recommendation."
+    );
+  }
+
+  return await response.json();
+}
+
+export async function saveUserGoal(goalData, hasGoal) {
+  const token = localStorage.getItem("calorie_tracker_token");
+
+  const response = await fetch(
+    hasGoal ? "/api/goals/me" : "/api/goals/",
+    {
+      method: hasGoal ? "PUT" : "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(goalData),
+    }
+  );
+
+  if (!response.ok) {
+    const data = await response.json().catch(() => null);
+
+    throw new Error(
+      typeof data?.detail === "string"
+        ? data.detail
+        : "Could not save your nutrition goals."
+    );
+  }
+
+  return await response.json();
+}
