@@ -389,3 +389,75 @@ export async function deleteFoodEntry(id) {
     throw new Error(await getFoodEntryError(response));
   }
 }
+
+
+async function getAccountError(response) {
+  const data = await response.json().catch(() => null);
+
+  if (typeof data?.detail === "string") {
+    return data.detail;
+  }
+
+  if (Array.isArray(data?.detail)) {
+    return data.detail.map((item) => item.msg).join(". ");
+  }
+
+  return "Account request failed. Please try again.";
+}
+
+export async function updateAccountEmail(email) {
+  const token = localStorage.getItem("calorie_tracker_token");
+
+  const response = await fetch("/api/users/me", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ email }),
+  });
+
+  if (!response.ok) {
+    throw new Error(await getAccountError(response));
+  }
+
+  return await response.json();
+}
+
+export async function changeAccountPassword(
+  currentPassword,
+  newPassword
+) {
+  const token = localStorage.getItem("calorie_tracker_token");
+
+  const response = await fetch("/api/users/me/change-password", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      current_password: currentPassword,
+      new_password: newPassword,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(await getAccountError(response));
+  }
+}
+
+export async function deleteAccount() {
+  const token = localStorage.getItem("calorie_tracker_token");
+
+  const response = await fetch("/api/users/me", {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(await getAccountError(response));
+  }
+}

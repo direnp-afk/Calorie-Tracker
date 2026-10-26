@@ -6,6 +6,7 @@ import GoalsPage from "./pages/GoalsPage";
 import DashboardPage from "./pages/DashboardPage";
 import FoodSearchPage from "./pages/FoodSearchPage";
 import FoodLogPage from "./pages/FoodLogPage";
+import AccountPage from "./pages/AccountPage";
 import "./App.css";
 
 const TOKEN_KEY = "calorie_tracker_token";
@@ -136,8 +137,9 @@ function App() {
           </section>
         ) : user ? (
           <>
-            <nav className="app-nav">
+            <nav className="app-nav" aria-label="Main navigation">
               <button
+                type="button"
                 className={page === "dashboard" ? "active" : ""}
                 onClick={() => setPage("dashboard")}
               >
@@ -145,13 +147,15 @@ function App() {
               </button>
 
               <button
+                type="button"
                 className={page === "food-search" ? "active" : ""}
                 onClick={() => setPage("food-search")}
               >
-                Food search
+                Search
               </button>
 
               <button
+                type="button"
                 className={page === "food-log" ? "active" : ""}
                 onClick={() => openFoodLog()}
               >
@@ -159,17 +163,41 @@ function App() {
               </button>
 
               <button
-                className={page === "profile" ? "active" : ""}
+                type="button"
+                className={
+                  page === "profile"
+                    ? "active nav-secondary"
+                    : "nav-secondary"
+                }
                 onClick={() => setPage("profile")}
               >
                 Profile
               </button>
 
               <button
-                className={page === "goals" ? "active" : ""}
+                type="button"
+                className={
+                  page === "goals"
+                    ? "active nav-secondary"
+                    : "nav-secondary"
+                }
                 onClick={() => setPage("goals")}
               >
                 Nutrition goals
+              </button>
+
+              <button
+                type="button"
+                className={
+                  page === "account"
+                    ? "active"
+                    : page === "profile" || page === "goals"
+                      ? "mobile-account-active"
+                      : ""
+                }
+                onClick={() => setPage("account")}
+              >
+                Account
               </button>
             </nav>
 
@@ -192,6 +220,14 @@ function App() {
               />
             ) : page === "goals" ? (
               <GoalsPage onBack={() => setPage("profile")} />
+            ) : page === "account" ? (
+              <AccountPage
+                user={user}
+                onUserUpdated={setUser}
+                onOpenProfile={() => setPage("profile")}
+                onOpenGoals={() => setPage("goals")}
+                onLogout={handleLogout}
+              />
             ) : (
               <ProfilePage
                 email={user.email}
@@ -206,8 +242,8 @@ function App() {
             <h1>Track your nutrition.</h1>
 
             <p className="description">
-              Log your meals, track your calories and stay on top of your
-              nutrition goals.
+              Log your meals, track your calories and stay on top of
+              your nutrition goals.
             </p>
 
             <section className="login-card">
