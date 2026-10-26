@@ -1,4 +1,4 @@
-
+import FoodSearchPage from "./pages/FoodSearchPage";
 import { useEffect, useState } from "react";
 import { loginUser, registerUser, verifyUser } from "./api/client";
 import ProfilePage from "./pages/ProfilePage";
@@ -118,6 +118,13 @@ function App() {
               </button>
 
               <button
+                className={page === "food-search" ? "active" : ""}
+                onClick={() => setPage("food-search")}
+              >
+                Food search
+              </button>
+
+              <button
                 className={page === "profile" ? "active" : ""}
                 onClick={() => setPage("profile")}
               >
@@ -133,13 +140,11 @@ function App() {
             </nav>
 
             {page === "dashboard" ? (
-              <DashboardPage
-                onOpenGoals={() => setPage("goals")}
-              />
+              <DashboardPage onOpenGoals={() => setPage("goals")} />
+            ) : page === "food-search" ? (
+              <FoodSearchPage />
             ) : page === "goals" ? (
-              <GoalsPage
-                onBack={() => setPage("profile")}
-              />
+              <GoalsPage onBack={() => setPage("profile")} />
             ) : (
               <ProfilePage
                 email={user.email}

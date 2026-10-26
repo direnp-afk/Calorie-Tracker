@@ -202,3 +202,42 @@ export async function getDailySummary(day) {
 
   return await response.json();
 }
+
+
+export async function searchFoods(query) {
+  const token = localStorage.getItem("calorie_tracker_token");
+
+  const response = await fetch(
+    `/api/foods/search?query=${encodeURIComponent(query)}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Could not search foods. Please try again.");
+  }
+
+  return await response.json();
+}
+
+export async function getFoodDetails(fdcId, quantityG = 100) {
+  const token = localStorage.getItem("calorie_tracker_token");
+
+  const response = await fetch(
+    `/api/foods/${fdcId}?quantity_g=${quantityG}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Could not load food details.");
+  }
+
+  return await response.json();
+}
