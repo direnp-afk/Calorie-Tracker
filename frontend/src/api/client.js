@@ -23,6 +23,33 @@ export async function loginUser(email, password) {
   return data.access_token;
 }
 
+export async function registerUser(email, password) {
+  const response = await fetch("/api/auth/register", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      email: email,
+      password: password,
+    }),
+  });
+
+  if (!response.ok) {
+    if (response.status === 404) {
+      throw new Error("An account with this email already exists.");
+    }
+
+    if (response.status === 422) {
+      throw new Error("Please check your registration details.");
+    }
+
+    throw new Error("Registration failed. Please try again.");
+  }
+
+  return await response.json();
+}
+
 export async function verifyUser(token) {
   const response = await fetch("/api/auth/verify-token", {
     headers: {

@@ -1,140 +1,21 @@
 
-.app {
-  min-height: 100vh;
+.auth-switch {
+  margin-top: 24px;
+  color: #999fa5;
+  font-size: 14px;
+  text-align: center;
 }
 
-.app-header {
-  padding: 24px 48px;
-  border-bottom: 1px solid #292c2f;
-}
-
-.app-header h2 {
-  margin: 0;
-  font-size: 20px;
-  font-weight: 600;
-}
-
-.app-main {
-  max-width: 900px;
-  margin: 80px auto;
-  padding: 0 24px;
-}
-
-.subtitle {
+.auth-switch button {
+  padding: 0;
+  margin-left: 8px;
+  background: none;
   color: #86b8a0;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 2px;
-}
-
-h1 {
-  font-size: 42px;
-  margin: 12px 0;
-}
-
-.description,
-.form-description {
-  color: #999fa5;
-  line-height: 1.6;
-}
-
-.login-card,
-.dashboard-preview {
-  max-width: 480px;
-  margin-top: 40px;
-  padding: 32px;
-  background-color: #1a1d1f;
-  border: 1px solid #303438;
-  border-radius: 10px;
-}
-
-.login-card h3,
-.dashboard-preview h3 {
-  margin-top: 0;
-  font-size: 22px;
-}
-
-.login-card form {
-  display: flex;
-  flex-direction: column;
-  margin-top: 28px;
-}
-
-.login-card label {
-  margin-bottom: 8px;
   font-size: 14px;
 }
 
-.login-card input {
-  padding: 12px 14px;
-  margin-bottom: 20px;
-  background-color: #111315;
-  border: 1px solid #383d40;
-  border-radius: 7px;
-  color: #e8e8e8;
-  font-size: 14px;
-}
-
-.login-card input:focus {
-  outline: none;
-  border-color: #86b8a0;
-}
-
-button {
-  padding: 13px 18px;
-  background-color: #86b8a0;
-  color: #111315;
-  border: none;
-  border-radius: 7px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #a0ceb6;
-}
-
-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.secondary-button {
-  margin-top: 16px;
-  background-color: #303438;
-  color: #e8e8e8;
-}
-
-.secondary-button:hover {
-  background-color: #3c4246;
-}
-
-.error-message {
-  color: #ed9292;
-  font-size: 13px;
-  margin: 0 0 16px;
-}
-
-.dashboard-preview p {
-  color: #999fa5;
-}
-
-@media (max-width: 600px) {
-  .app-header {
-    padding: 20px 24px;
-  }
-
-  .app-main {
-    margin: 56px auto;
-  }
-
-  h1 {
-    font-size: 34px;
-  }
-
-  .login-card,
-  .dashboard-preview {
-    padding: 24px;
-  }
+.auth-switch button:hover {
+  background: none;
+  color: #a0ceb6;
+  text-decoration: underline;
 }
