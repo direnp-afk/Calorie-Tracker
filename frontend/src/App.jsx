@@ -1,7 +1,9 @@
-import ProfilePage from "./pages/ProfilePage";
-import GoalsPage from "./pages/GoalsPage";
+
 import { useEffect, useState } from "react";
 import { loginUser, registerUser, verifyUser } from "./api/client";
+import ProfilePage from "./pages/ProfilePage";
+import GoalsPage from "./pages/GoalsPage";
+import DashboardPage from "./pages/DashboardPage";
 import "./App.css";
 
 const TOKEN_KEY = "calorie_tracker_token";
@@ -11,19 +13,17 @@ function App() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
+  const [page, setPage] = useState("profile");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [checkingSession, setCheckingSession] = useState(
     Boolean(localStorage.getItem(TOKEN_KEY))
   );
-  const [page, setPage] = useState("profile");
 
   useEffect(() => {
     const savedToken = localStorage.getItem(TOKEN_KEY);
 
-    if (!savedToken) {
-      return;
-    }
+    if (!savedToken) return;
 
     let active = true;
 
@@ -67,6 +67,7 @@ function App() {
 
       localStorage.setItem(TOKEN_KEY, token);
       setUser(loggedInUser);
+      setPage("profile");
       setPassword("");
     } catch (err) {
       if (err.message === "Failed to fetch") {
@@ -84,9 +85,9 @@ function App() {
     setUser(null);
     setEmail("");
     setPassword("");
+    setPage("profile");
     setMode("login");
     setError("");
-    setPage("profile");
   }
 
   function switchMode() {
@@ -102,83 +103,118 @@ function App() {
       </header>
 
       <main className="app-main">
-        <p className="subtitle">NUTRITION TRACKING</p>
-
-        <h1>Track your nutrition.</h1>
-
-        <p className="description">
-          Log your meals, track your calories and stay on top of your nutrition goals.
-        </p>
-
         {checkingSession ? (
           <section className="login-card">
             <p>Checking your session...</p>
           </section>
         ) : user ? (
-          page === "goals" ? (
-            <GoalsPage onBack={() => setPage("profile")} />
-          ) : (
-            <ProfilePage
-              email={user.email}
-              onLogout={handleLogout}
-              onOpenGoals={() => setPage("goals")}
-            />
-          )
+          <>
+            <nav className="app-nav">
+              <button
+                className={page === "dashboard" ? "active" : ""}
+                onClick={() => setPage("dashboard")}
+              >
+                Dashboard
+              </button>
+
+              <button
+                className={page === "profile" ? "active" : ""}
+                onClick={() => setPage("profile")}
+              >
+                Profile
+              </button>
+
+              <button
+                className={page === "goals" ? "active" : ""}
+                onClick={() => setPage("goals")}
+              >
+                Nutrition goals
+              </button>
+            </nav>
+
+            {page === "dashboard" ? (
+              <DashboardPage
+                onOpenGoals={() => setPage("goals")}
+              />
+            ) : page === "goals" ? (
+              <GoalsPage
+                onBack={() => setPage("profile")}
+              />
+            ) : (
+              <ProfilePage
+                email={user.email}
+                onLogout={handleLogout}
+                onOpenGoals={() => setPage("goals")}
+              />
+            )}
+          </>
         ) : (
-          <section className="login-card">
-            <h3>{mode === "login" ? "Log in" : "Create an account"}</h3>
+          <>
+            <p className="subtitle">NUTRITION TRACKING</p>
+            <h1>Track your nutrition.</h1>
 
-            <p className="form-description">
-              {mode === "login"
-                ? "Enter your account details to continue."
-                : "Create an account to start tracking your nutrition."}
+            <p className="description">
+              Log your meals, track your calories and stay on top of your
+              nutrition goals.
             </p>
 
-            <form onSubmit={handleSubmit}>
-              <label htmlFor="email">Email</label>
-              <input
-                id="email"
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                autoComplete="email"
-                required
-              />
+            <section className="login-card">
+              <h3>{mode === "login" ? "Log in" : "Create an account"}</h3>
 
-              <label htmlFor="password">Password</label>
-              <input
-                id="password"
-                type="password"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                autoComplete={mode === "login" ? "current-password" : "new-password"}
-                minLength={mode === "register" ? 8 : undefined}
-                required
-              />
+              <p className="form-description">
+                {mode === "login"
+                  ? "Enter your account details to continue."
+                  : "Create an account to start tracking your nutrition."}
+              </p>
 
-              {error && <p className="error-message">{error}</p>}
+              <form onSubmit={handleSubmit}>
+                <label htmlFor="email">Email</label>
+                <input
+                  id="email"
+                  type="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                  autoComplete="email"
+                  required
+                />
 
-              <button type="submit" disabled={loading}>
-                {loading
-                  ? "Please wait..."
-                  : mode === "login"
-                    ? "Log in"
-                    : "Create account"}
-              </button>
-            </form>
+                <label htmlFor="password">Password</label>
+                <input
+                  id="password"
+                  type="password"
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                  autoComplete={
+                    mode === "login" ? "current-password" : "new-password"
+                  }
+                  minLength={mode === "register" ? 8 : undefined}
+                  required
+                />
 
-            <p className="auth-switch">
-              {mode === "login"
-                ? "Don't have an account?"
-                : "Already have an account?"}
+                {error && <p className="error-message">{error}</p>}
 
-              <button type="button" onClick={switchMode}>
-                {mode === "login" ? "Sign up" : "Log in"}
-              </button>
-            </p>
-          </section>
+                <button type="submit" disabled={loading}>
+                  {loading
+                    ? "Please wait..."
+                    : mode === "login"
+                      ? "Log in"
+                      : "Create account"}
+                </button>
+              </form>
+
+              <p className="auth-switch">
+                {mode === "login"
+                  ? "Don't have an account?"
+                  : "Already have an account?"}
+
+                <button type="button" onClick={switchMode}>
+                  {mode === "login" ? "Sign up" : "Log in"}
+                </button>
+              </p>
+            </section>
+          </>
         )}
       </main>
     </div>

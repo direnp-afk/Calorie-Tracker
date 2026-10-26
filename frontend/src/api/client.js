@@ -181,3 +181,24 @@ export async function saveUserGoal(goalData, hasGoal) {
 
   return await response.json();
 }
+
+
+export async function getDailySummary(day) {
+  const token = localStorage.getItem("calorie_tracker_token");
+
+  const response = await fetch(`/api/summary/daily?day=${day}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (response.status === 404) {
+    return null;
+  }
+
+  if (!response.ok) {
+    throw new Error("Could not load your daily summary.");
+  }
+
+  return await response.json();
+}
