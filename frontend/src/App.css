@@ -1200,3 +1200,527 @@
     flex-wrap: wrap;
   }
 }
+
+
+/* =========================================
+   Final UI refinements
+   ========================================= */
+
+:root {
+  --app-bg: #101213;
+  --app-surface: #191c1d;
+  --app-surface-alt: #141718;
+  --app-border: #303637;
+  --app-text: #e7ebe8;
+  --app-muted: #a0a9a5;
+  --app-green: #94bca3;
+}
+
+/* Overall application */
+
+.app {
+  width: 100%;
+  min-width: 0;
+  min-height: 100dvh;
+  background: var(--app-bg);
+  color: var(--app-text);
+}
+
+.app-header {
+  width: 100%;
+  padding: 19px 36px;
+  background: var(--app-bg);
+  border-bottom: 1px solid var(--app-border);
+}
+
+.app-header h2 {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 650;
+  letter-spacing: -0.5px;
+}
+
+.app-main {
+  width: 100%;
+  max-width: 1180px;
+  min-width: 0;
+  margin: 0 auto;
+  padding: 36px 32px 80px;
+}
+
+.app-main h1 {
+  margin: 8px 0 12px;
+  font-size: clamp(30px, 3.5vw, 40px);
+  line-height: 1.15;
+  letter-spacing: -1.1px;
+  font-weight: 650;
+}
+
+.subtitle {
+  color: var(--app-green);
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: 1.5px;
+}
+
+.description {
+  max-width: 560px;
+  color: var(--app-muted);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+/* Desktop navigation */
+
+.app-nav {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 0 40px;
+  padding: 5px;
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: 12px;
+}
+
+.app-nav button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 43px;
+  margin: 0;
+  padding: 10px 15px;
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  color: var(--app-muted);
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.app-nav button svg {
+  flex-shrink: 0;
+}
+
+.app-nav button:hover {
+  background: #242a28;
+  color: var(--app-text);
+}
+
+.app-nav button.active {
+  background: #283b30;
+  border: 0;
+  color: #b9ddc5;
+}
+
+/* Unified surfaces */
+
+.login-card,
+.profile-card,
+.goal-card,
+.summary-card,
+.food-search-card,
+.food-details-card,
+.food-log-card,
+.account-card {
+  min-width: 0;
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: 12px;
+  box-shadow: none;
+}
+
+.summary-card,
+.profile-card,
+.goal-card,
+.food-search-card,
+.food-details-card,
+.account-card {
+  padding: 28px;
+}
+
+.summary-card h3,
+.profile-card h3,
+.goal-card h3,
+.account-card h3 {
+  color: var(--app-text);
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+}
+
+/* Dashboard */
+
+.dashboard-cards {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 0.95fr) minmax(0, 1.05fr);
+  gap: 18px;
+  margin-top: 28px;
+}
+
+.dashboard-cards > *,
+.food-search-layout > *,
+.meal-grid > *,
+.goal-macros > *,
+.profile-grid > * {
+  min-width: 0;
+}
+
+.calorie-total {
+  margin-bottom: 26px;
+}
+
+.calorie-total strong {
+  font-size: clamp(38px, 4vw, 52px);
+  font-weight: 650;
+  line-height: 1.1;
+  letter-spacing: -1.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+.calorie-total span,
+.calorie-remaining {
+  color: var(--app-muted);
+}
+
+.progress-track {
+  height: 8px;
+  background: #303638;
+  border-radius: 99px;
+}
+
+.progress-fill {
+  background: var(--app-green);
+  border-radius: 99px;
+}
+
+.nutrient-label {
+  font-size: 13px;
+}
+
+.nutrient-label span:first-child {
+  font-weight: 550;
+  color: var(--app-text);
+}
+
+.meals-section,
+.diary-section {
+  margin-top: 18px;
+}
+
+.meal-grid {
+  gap: 14px;
+}
+
+.meal-card,
+.goal-option,
+.goal-calories,
+.goal-macros > div,
+.food-nutrient,
+.food-micro,
+.diary-entry {
+  background: var(--app-surface-alt);
+  border: 1px solid var(--app-border);
+  border-radius: 9px;
+}
+
+.meal-card {
+  padding: 21px;
+}
+
+.meal-card h4 {
+  font-size: 14px;
+}
+
+.meal-calories {
+  font-size: 25px;
+  letter-spacing: -0.5px;
+}
+
+/* Forms and buttons */
+
+.app-main input,
+.app-main select,
+.app-main textarea {
+  max-width: 100%;
+  min-width: 0;
+  border-radius: 9px;
+}
+
+.app-main button {
+  border-radius: 9px;
+}
+
+.app-main .secondary-button {
+  background: #252b29;
+  border: 1px solid #3b4540;
+  color: #d5ded7;
+}
+
+.app-main .secondary-button:hover {
+  background: #303834;
+  border-color: #516157;
+}
+
+.dashboard-date input {
+  min-height: 45px;
+  border-radius: 9px;
+}
+
+/* Food diary and search */
+
+.food-search-layout {
+  gap: 18px;
+}
+
+.food-result {
+  border-radius: 9px;
+}
+
+.food-result.selected {
+  background: #25372d;
+  border-color: #769e83;
+}
+
+.diary-entry {
+  padding: 20px;
+}
+
+.diary-entry-header h5 {
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+/* =========================================
+   Mobile
+   ========================================= */
+
+@media (max-width: 760px) {
+  .app-header {
+    padding: 16px 18px;
+  }
+
+  .app-header h2 {
+    font-size: 17px;
+  }
+
+  .app-main {
+    width: 100%;
+    max-width: none;
+    padding: 24px 16px
+      calc(112px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .app-main h1 {
+    margin-top: 6px;
+    font-size: 29px;
+    letter-spacing: -0.8px;
+  }
+
+  .description {
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  /* Mobile bottom navigation */
+
+  .app-nav {
+    position: fixed;
+    z-index: 100;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 4px;
+
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 8px 10px
+      calc(9px + env(safe-area-inset-bottom, 0px));
+
+    background: #141718;
+    border: 0;
+    border-top: 1px solid var(--app-border);
+    border-radius: 0;
+    box-shadow: 0 -8px 24px #00000030;
+  }
+
+  .app-nav button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+
+    min-width: 0;
+    min-height: 57px;
+    padding: 8px 2px;
+    margin: 0;
+
+    border: 0;
+    border-radius: 9px;
+    background: transparent;
+
+    color: var(--app-muted);
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1.15;
+    white-space: nowrap;
+  }
+
+  .app-nav button svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .app-nav button.active,
+  .app-nav button.mobile-account-active {
+    background: #283b30;
+    color: #b9ddc5;
+  }
+
+  .app-nav .nav-secondary {
+    display: none;
+  }
+
+  /* Mobile page headers */
+
+  .profile-header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .profile-header .secondary-button {
+    margin-top: 0;
+  }
+
+  .dashboard-date {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .dashboard-date label {
+    flex-shrink: 0;
+  }
+
+  .dashboard-date input {
+    width: 190px;
+    max-width: 100%;
+  }
+
+  /* Cards fit the viewport */
+
+  .dashboard-cards,
+  .meal-grid,
+  .food-search-layout,
+  .goal-options,
+  .profile-grid,
+  .food-log-grid,
+  .diary-edit-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dashboard-cards {
+    gap: 14px;
+    margin-top: 22px;
+  }
+
+  .summary-card,
+  .profile-card,
+  .goal-card,
+  .food-search-card,
+  .food-details-card,
+  .food-log-card,
+  .account-card {
+    width: 100%;
+    max-width: 100%;
+    padding: 20px;
+  }
+
+  .summary-card h3 {
+    margin-bottom: 22px;
+    font-size: 17px;
+  }
+
+  .calorie-total strong {
+    font-size: 43px;
+  }
+
+  .meal-card {
+    padding: 18px;
+  }
+
+  .meals-section,
+  .diary-section {
+    margin-top: 14px;
+  }
+
+  .food-portion-form {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .food-portion-form button,
+  .diary-full,
+  .food-log-full {
+    grid-column: auto;
+  }
+
+  .diary-entry {
+    padding: 16px;
+  }
+
+  .diary-entry-header {
+    flex-wrap: wrap;
+  }
+
+  .login-card {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  /* Prevent iOS form zoom */
+
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}
+
+/* Very narrow phones */
+
+@media (max-width: 360px) {
+  .app-main {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .app-nav {
+    padding-left: 6px;
+    padding-right: 6px;
+  }
+
+  .app-nav button {
+    font-size: 10px;
+  }
+
+  .goal-macros,
+  .food-nutrient-grid,
+  .food-micro-grid {
+    grid-template-columns: 1fr;
+  }
+}

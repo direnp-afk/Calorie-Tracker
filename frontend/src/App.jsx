@@ -8,6 +8,15 @@ import FoodSearchPage from "./pages/FoodSearchPage";
 import FoodLogPage from "./pages/FoodLogPage";
 import AccountPage from "./pages/AccountPage";
 import "./App.css";
+import {
+  LayoutDashboard,
+  Search,
+  PlusCircle,
+  UserRound,
+  Target,
+  Settings2,
+} from "lucide-react";
+
 
 const TOKEN_KEY = "calorie_tracker_token";
 
@@ -137,53 +146,56 @@ function App() {
           </section>
         ) : user ? (
           <>
+            
             <nav className="app-nav" aria-label="Main navigation">
               <button
                 type="button"
                 className={page === "dashboard" ? "active" : ""}
                 onClick={() => setPage("dashboard")}
+                aria-current={page === "dashboard" ? "page" : undefined}
               >
-                Dashboard
+                <LayoutDashboard size={19} strokeWidth={1.8} aria-hidden="true" />
+                <span>Dashboard</span>
               </button>
 
               <button
                 type="button"
                 className={page === "food-search" ? "active" : ""}
                 onClick={() => setPage("food-search")}
+                aria-current={page === "food-search" ? "page" : undefined}
               >
-                Search
+                <Search size={19} strokeWidth={1.8} aria-hidden="true" />
+                <span>Search</span>
               </button>
 
               <button
                 type="button"
                 className={page === "food-log" ? "active" : ""}
                 onClick={() => openFoodLog()}
+                aria-current={page === "food-log" ? "page" : undefined}
               >
-                Log food
+                <PlusCircle size={19} strokeWidth={1.8} aria-hidden="true" />
+                <span>Log food</span>
               </button>
 
               <button
                 type="button"
-                className={
-                  page === "profile"
-                    ? "active nav-secondary"
-                    : "nav-secondary"
-                }
+                className={`nav-secondary ${page === "profile" ? "active" : ""}`}
                 onClick={() => setPage("profile")}
+                aria-current={page === "profile" ? "page" : undefined}
               >
-                Profile
+                <UserRound size={19} strokeWidth={1.8} aria-hidden="true" />
+                <span>Profile</span>
               </button>
 
               <button
                 type="button"
-                className={
-                  page === "goals"
-                    ? "active nav-secondary"
-                    : "nav-secondary"
-                }
+                className={`nav-secondary ${page === "goals" ? "active" : ""}`}
                 onClick={() => setPage("goals")}
+                aria-current={page === "goals" ? "page" : undefined}
               >
-                Nutrition goals
+                <Target size={19} strokeWidth={1.8} aria-hidden="true" />
+                <span>Goals</span>
               </button>
 
               <button
@@ -191,15 +203,18 @@ function App() {
                 className={
                   page === "account"
                     ? "active"
-                    : page === "profile" || page === "goals"
+                    : ["profile", "goals"].includes(page)
                       ? "mobile-account-active"
                       : ""
                 }
                 onClick={() => setPage("account")}
+                aria-current={page === "account" ? "page" : undefined}
               >
-                Account
+                <Settings2 size={19} strokeWidth={1.8} aria-hidden="true" />
+                <span>Account</span>
               </button>
             </nav>
+
 
             {page === "dashboard" ? (
               <DashboardPage
