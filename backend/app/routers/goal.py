@@ -22,6 +22,7 @@ def get_goal(current_user:User = Depends(get_current_active_user), db:Session=De
 
 
 @router.post("/", response_model=GoalEntryResponse)
+@router.post("", response_model=GoalEntryResponse, include_in_schema=False)
 def create_goal(goal:GoalEntryCreate, current_user:User = Depends(get_current_active_user), db:Session=Depends(get_db)):
     if db.query(GoalEntry).filter(GoalEntry.user_id == current_user.id).first():
         raise HTTPException(
