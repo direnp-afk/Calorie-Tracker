@@ -1,4 +1,4 @@
-
+import FoodDiary from "./FoodDiary";
 import { useEffect, useState } from "react";
 import { getDailySummary } from "../api/client";
 
@@ -36,6 +36,7 @@ function DashboardPage({ onOpenGoals, day, onDayChange }) {
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [revision, setRevision] = useState(0);
 
   useEffect(() => {
     let active = true;
@@ -67,7 +68,7 @@ function DashboardPage({ onOpenGoals, day, onDayChange }) {
     return () => {
       active = false;
     };
-  }, [day]);
+  }, [day, revision]);
 
   const caloriesConsumed = summary?.consumed.calories ?? 0;
   const calorieTarget = summary?.targets.calories ?? 0;
@@ -197,6 +198,11 @@ function DashboardPage({ onOpenGoals, day, onDayChange }) {
           </section>
         </>
       )}
+      <FoodDiary
+        day={day}
+        revision={revision}
+        onChanged={() => setRevision((previous) => previous + 1)}
+      />
     </>
   );
 }

@@ -294,3 +294,98 @@ export async function logManualFood(foodData) {
 
   return await response.json();
 }
+
+
+export async function getFoodEntries(day) {
+  const token = localStorage.getItem("calorie_tracker_token");
+
+  const response = await fetch(
+    `/api/food_entries/me?day=${encodeURIComponent(day)}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Could not load your food diary.");
+  }
+
+  return await response.json();
+}
+
+export async function updateManualEntry(id, data) {
+  const token = localStorage.getItem("calorie_tracker_token");
+
+  const response = await fetch(`/api/food_entries/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    throw new Error(await getFoodEntryError(response));
+  }
+
+  return await response.json();
+}
+
+export async function updateUsdaEntryQuantity(id, quantityG) {
+  const token = localStorage.getItem("calorie_tracker_token");
+
+  const response = await fetch(
+    `/api/food_entries/${id}/quantity`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ quantity_g: quantityG }),
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error(await getFoodEntryError(response));
+  }
+
+  return await response.json();
+}
+
+export async function moveFoodEntry(id, date) {
+  const token = localStorage.getItem("calorie_tracker_token");
+
+  const response = await fetch(`/api/food_entries/${id}/date`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ date_logged: date }),
+  });
+
+  if (!response.ok) {
+    throw new Error(await getFoodEntryError(response));
+  }
+
+  return await response.json();
+}
+
+export async function deleteFoodEntry(id) {
+  const token = localStorage.getItem("calorie_tracker_token");
+
+  const response = await fetch(`/api/food_entries/${id}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(await getFoodEntryError(response));
+  }
+}

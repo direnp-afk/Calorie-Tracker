@@ -767,3 +767,187 @@
     grid-column: auto;
   }
 }
+
+
+/* Food diary */
+
+.diary-section {
+  margin-top: 20px;
+}
+
+.diary-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.diary-heading h3 {
+  margin-bottom: 8px;
+}
+
+.diary-heading p {
+  margin: 0;
+  font-size: 13px;
+}
+
+.diary-count {
+  padding: 7px 12px;
+  color: #aeb4b7;
+  border: 1px solid #303438;
+  border-radius: 20px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.diary-meal {
+  margin-top: 26px;
+}
+
+.diary-meal h4 {
+  margin: 0 0 14px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.diary-empty {
+  font-size: 13px;
+}
+
+.diary-entry {
+  padding: 20px;
+  margin-bottom: 10px;
+  background-color: #111315;
+  border: 1px solid #303438;
+  border-radius: 8px;
+}
+
+.diary-entry-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.diary-entry-header h5 {
+  margin: 0 0 8px;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.diary-entry-header p {
+  margin: 0;
+  color: #999fa5;
+  font-size: 12px;
+}
+
+.diary-entry-header strong {
+  font-size: 16px;
+  white-space: nowrap;
+}
+
+.diary-entry-macros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin-top: 16px;
+  color: #999fa5;
+  font-size: 12px;
+}
+
+.diary-entry-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.diary-entry-actions button {
+  padding: 8px 14px;
+  font-size: 13px;
+}
+
+.diary-delete {
+  background-color: transparent;
+  border: 1px solid #594040;
+  color: #e9a7a7;
+}
+
+.diary-delete:hover {
+  background-color: #332425;
+}
+
+.diary-editor {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #303438;
+}
+
+.diary-edit-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.diary-full {
+  grid-column: 1 / -1;
+}
+
+.diary-save {
+  margin-top: 20px;
+}
+
+.diary-move {
+  display: flex;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #303438;
+}
+
+.diary-move .secondary-button {
+  margin-top: 0;
+}
+
+.diary-cancel {
+  margin-top: 18px;
+  padding: 0;
+  background: none;
+  color: #999fa5;
+  font-size: 13px;
+}
+
+.diary-cancel:hover {
+  background: none;
+  color: #e8e8e8;
+  text-decoration: underline;
+}
+
+.diary-note {
+  font-size: 12px;
+  color: #999fa5;
+}
+
+.diary-message {
+  color: #86b8a0 !important;
+  font-size: 13px;
+}
+
+@media (max-width: 600px) {
+  .diary-edit-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .diary-full {
+    grid-column: auto;
+  }
+
+  .diary-entry {
+    padding: 16px;
+  }
+
+  .diary-heading {
+    flex-wrap: wrap;
+  }
+}
