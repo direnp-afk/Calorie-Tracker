@@ -241,3 +241,56 @@ export async function getFoodDetails(fdcId, quantityG = 100) {
 
   return await response.json();
 }
+
+
+async function getFoodEntryError(response) {
+  const data = await response.json().catch(() => null);
+
+  if (typeof data?.detail === "string") {
+    return data.detail;
+  }
+
+  if (Array.isArray(data?.detail)) {
+    return data.detail.map((item) => item.msg).join(". ");
+  }
+
+  return "Could not save food entry.";
+}
+
+export async function logSearchedFood(foodData) {
+  const token = localStorage.getItem("calorie_tracker_token");
+
+  const response = await fetch("/api/food_entries/from-search", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(foodData),
+  });
+
+  if (!response.ok) {
+    throw new Error(await getFoodEntryError(response));
+  }
+
+  return await response.json();
+}
+
+export async function logManualFood(foodData) {
+  const token = localStorage.getItem("calorie_tracker_token");
+
+  const response = await fetch("/api/food_entries/", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(foodData),
+  });
+
+  if (!response.ok) {
+    throw new Error(await getFoodEntryError(response));
+  }
+
+  return await response.json();
+}

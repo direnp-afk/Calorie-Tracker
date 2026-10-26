@@ -2,15 +2,6 @@
 import { useEffect, useState } from "react";
 import { getDailySummary } from "../api/client";
 
-function getToday() {
-  const today = new Date();
-
-  const year = today.getFullYear();
-  const month = String(today.getMonth() + 1).padStart(2, "0");
-  const day = String(today.getDate()).padStart(2, "0");
-
-  return `${year}-${month}-${day}`;
-}
 
 function NutrientProgress({ name, consumed, target }) {
   const percentage = target > 0
@@ -41,8 +32,7 @@ const mealNames = {
   snacks: "Snacks",
 };
 
-function DashboardPage({ onOpenGoals }) {
-  const [day, setDay] = useState(getToday);
+function DashboardPage({ onOpenGoals, day, onDayChange }) {
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -103,7 +93,11 @@ function DashboardPage({ onOpenGoals }) {
             id="selected-day"
             type="date"
             value={day}
-            onChange={(event) => setDay(event.target.value)}
+            onChange={(event) => {
+              if (event.target.value) {
+                onDayChange(event.target.value);
+              }
+            }}
           />
         </div>
       </div>

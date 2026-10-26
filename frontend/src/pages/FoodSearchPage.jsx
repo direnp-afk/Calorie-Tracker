@@ -16,7 +16,7 @@ function displayNutrient(value, unit) {
   return value == null ? "Not available" : `${value} ${unit}`;
 }
 
-function FoodSearchPage() {
+function FoodSearchPage({onLogFood}) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [selectedFood, setSelectedFood] = useState(null);
@@ -111,6 +111,19 @@ function FoodSearchPage() {
   const micronutrients = Object.entries(
     details?.micronutrients ?? {}
   );
+
+  
+  const selectedPortion = details?.portions?.[portionIndex];
+
+  const requestedGrams =
+    Number(quantity) * (selectedPortion?.gram_weight ?? 0);
+
+  const quantityIsCurrent =
+    details !== null &&
+    Number.isFinite(requestedGrams) &&
+    requestedGrams > 0 &&
+    Math.abs(requestedGrams - details.quantity_g) < 0.01;
+
 
   return (
     <>
@@ -294,8 +307,31 @@ function FoodSearchPage() {
                   )}
 
                   <p className="food-search-hint">
-                    Nutrients are shown when available from USDA.
-                    Food logging will be added in the next stage.
+                    <button
+                    type="button"
+                    className="food-log-button"
+                    disabled={loadingDetails || !quantityIsCurrent}
+                    onClick={() =>
+                        onLogFood({
+                        id: details.id,
+                        name: details.name,
+                        quantityG: details.quantity_g,
+                        calories: details.calories,
+                        protein: details.protein,
+                        carbs: details.carbs,
+                        fats: details.fats,
+                        })
+                    }
+                    >
+                    Log this food
+                    </button>
+
+                    <p className="food-search-hint">
+                    {quantityIsCurrent
+                        ? "Choose a meal and date to add this food to your diary."
+                        : "Click Update nutrition to apply your selected quantity before logging."}
+                    </p>
+
                   </p>
                 </>
               )}

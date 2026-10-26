@@ -1,12 +1,23 @@
-import FoodSearchPage from "./pages/FoodSearchPage";
+
 import { useEffect, useState } from "react";
 import { loginUser, registerUser, verifyUser } from "./api/client";
 import ProfilePage from "./pages/ProfilePage";
 import GoalsPage from "./pages/GoalsPage";
 import DashboardPage from "./pages/DashboardPage";
+import FoodSearchPage from "./pages/FoodSearchPage";
+import FoodLogPage from "./pages/FoodLogPage";
 import "./App.css";
 
 const TOKEN_KEY = "calorie_tracker_token";
+
+function getToday() {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, "0");
+  const day = String(today.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
 
 function App() {
   const [mode, setMode] = useState("login");
@@ -14,8 +25,11 @@ function App() {
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
   const [page, setPage] = useState("profile");
+  const [dashboardDay, setDashboardDay] = useState(getToday);
+  const [foodToLog, setFoodToLog] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
   const [checkingSession, setCheckingSession] = useState(
     Boolean(localStorage.getItem(TOKEN_KEY))
   );
@@ -70,11 +84,11 @@ function App() {
       setPage("profile");
       setPassword("");
     } catch (err) {
-      if (err.message === "Failed to fetch") {
-        setError("Cannot connect to the backend. Make sure FastAPI is running.");
-      } else {
-        setError(err.message);
-      }
+      setError(
+        err.message === "Failed to fetch"
+          ? "Cannot connect to the backend. Make sure FastAPI is running."
+          : err.message
+      );
     } finally {
       setLoading(false);
     }
@@ -86,6 +100,8 @@ function App() {
     setEmail("");
     setPassword("");
     setPage("profile");
+    setDashboardDay(getToday());
+    setFoodToLog(null);
     setMode("login");
     setError("");
   }
@@ -94,6 +110,17 @@ function App() {
     setMode(mode === "login" ? "register" : "login");
     setPassword("");
     setError("");
+  }
+
+  function openFoodLog(food = null) {
+    setFoodToLog(food);
+    setPage("food-log");
+  }
+
+  function handleFoodSaved(day) {
+    setDashboardDay(day);
+    setFoodToLog(null);
+    setPage("dashboard");
   }
 
   return (
@@ -125,6 +152,13 @@ function App() {
               </button>
 
               <button
+                className={page === "food-log" ? "active" : ""}
+                onClick={() => openFoodLog()}
+              >
+                Log food
+              </button>
+
+              <button
                 className={page === "profile" ? "active" : ""}
                 onClick={() => setPage("profile")}
               >
@@ -140,9 +174,22 @@ function App() {
             </nav>
 
             {page === "dashboard" ? (
-              <DashboardPage onOpenGoals={() => setPage("goals")} />
+              <DashboardPage
+                day={dashboardDay}
+                onDayChange={setDashboardDay}
+                onOpenGoals={() => setPage("goals")}
+              />
             ) : page === "food-search" ? (
-              <FoodSearchPage />
+              <FoodSearchPage onLogFood={openFoodLog} />
+            ) : page === "food-log" ? (
+              <FoodLogPage
+                food={foodToLog}
+                defaultDay={dashboardDay}
+                onSaved={handleFoodSaved}
+                onCancel={() =>
+                  setPage(foodToLog ? "food-search" : "dashboard")
+                }
+              />
             ) : page === "goals" ? (
               <GoalsPage onBack={() => setPage("profile")} />
             ) : (
