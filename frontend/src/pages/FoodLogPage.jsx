@@ -10,8 +10,8 @@ const emptyFood = {
   fats: "",
 };
 
-function FoodLogPage({ food, defaultDay, onSaved, onCancel }) {
-  const [meal, setMeal] = useState("breakfast");
+function FoodLogPage({food, defaultDay, defaultMeal = "breakfast", onSaved, onCancel,}) {
+  const [meal, setMeal] = useState(defaultMeal);
   const [day, setDay] = useState(defaultDay);
   const [manual, setManual] = useState(emptyFood);
   const [saving, setSaving] = useState(false);

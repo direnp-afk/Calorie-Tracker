@@ -1,27 +1,28 @@
 
 import { useEffect, useState } from "react";
-import { loginUser, registerUser, verifyUser } from "./api/client";
-import ProfilePage from "./pages/ProfilePage";
-import GoalsPage from "./pages/GoalsPage";
-import DashboardPage from "./pages/DashboardPage";
-import FoodSearchPage from "./pages/FoodSearchPage";
-import FoodLogPage from "./pages/FoodLogPage";
-import AccountPage from "./pages/AccountPage";
-import "./App.css";
 import {
   LayoutDashboard,
-  Search,
-  PlusCircle,
+  Utensils,
   UserRound,
   Target,
   Settings2,
 } from "lucide-react";
 
+import { loginUser, registerUser, verifyUser } from "./api/client";
+import DashboardPage from "./pages/DashboardPage";
+import MealsPage from "./pages/MealsPage";
+import FoodSearchPage from "./pages/FoodSearchPage";
+import FoodLogPage from "./pages/FoodLogPage";
+import ProfilePage from "./pages/ProfilePage";
+import GoalsPage from "./pages/GoalsPage";
+import AccountPage from "./pages/AccountPage";
+import "./App.css";
 
 const TOKEN_KEY = "calorie_tracker_token";
 
 function getToday() {
   const today = new Date();
+
   const year = today.getFullYear();
   const month = String(today.getMonth() + 1).padStart(2, "0");
   const day = String(today.getDate()).padStart(2, "0");
@@ -34,12 +35,14 @@ function App() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
+
   const [page, setPage] = useState("profile");
   const [dashboardDay, setDashboardDay] = useState(getToday);
+  const [selectedMeal, setSelectedMeal] = useState("breakfast");
   const [foodToLog, setFoodToLog] = useState(null);
+
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-
   const [checkingSession, setCheckingSession] = useState(
     Boolean(localStorage.getItem(TOKEN_KEY))
   );
@@ -109,10 +112,11 @@ function App() {
     setUser(null);
     setEmail("");
     setPassword("");
+    setMode("login");
     setPage("profile");
     setDashboardDay(getToday());
+    setSelectedMeal("breakfast");
     setFoodToLog(null);
-    setMode("login");
     setError("");
   }
 
@@ -122,7 +126,19 @@ function App() {
     setError("");
   }
 
-  function openFoodLog(food = null) {
+  function openMealSearch(meal) {
+    setSelectedMeal(meal);
+    setFoodToLog(null);
+    setPage("food-search");
+  }
+
+  function openManualLog(meal) {
+    setSelectedMeal(meal);
+    setFoodToLog(null);
+    setPage("food-log");
+  }
+
+  function openSelectedFood(food) {
     setFoodToLog(food);
     setPage("food-log");
   }
@@ -130,8 +146,10 @@ function App() {
   function handleFoodSaved(day) {
     setDashboardDay(day);
     setFoodToLog(null);
-    setPage("dashboard");
+    setPage("meals");
   }
+
+  const mealsActive = ["meals", "food-search", "food-log"].includes(page);
 
   return (
     <div className="app">
@@ -146,55 +164,52 @@ function App() {
           </section>
         ) : user ? (
           <>
-            
             <nav className="app-nav" aria-label="Main navigation">
               <button
                 type="button"
                 className={page === "dashboard" ? "active" : ""}
                 onClick={() => setPage("dashboard")}
-                aria-current={page === "dashboard" ? "page" : undefined}
+                aria-current={
+                  page === "dashboard" ? "page" : undefined
+                }
               >
-                <LayoutDashboard size={19} strokeWidth={1.8} aria-hidden="true" />
+                <LayoutDashboard size={19} aria-hidden="true" />
                 <span>Dashboard</span>
               </button>
 
               <button
                 type="button"
-                className={page === "food-search" ? "active" : ""}
-                onClick={() => setPage("food-search")}
-                aria-current={page === "food-search" ? "page" : undefined}
+                className={mealsActive ? "active" : ""}
+                onClick={() => setPage("meals")}
+                aria-current={mealsActive ? "page" : undefined}
               >
-                <Search size={19} strokeWidth={1.8} aria-hidden="true" />
-                <span>Search</span>
+                <Utensils size={19} aria-hidden="true" />
+                <span>Meals</span>
               </button>
 
               <button
                 type="button"
-                className={page === "food-log" ? "active" : ""}
-                onClick={() => openFoodLog()}
-                aria-current={page === "food-log" ? "page" : undefined}
-              >
-                <PlusCircle size={19} strokeWidth={1.8} aria-hidden="true" />
-                <span>Log food</span>
-              </button>
-
-              <button
-                type="button"
-                className={`nav-secondary ${page === "profile" ? "active" : ""}`}
+                className={
+                  page === "profile"
+                    ? "nav-secondary active"
+                    : "nav-secondary"
+                }
                 onClick={() => setPage("profile")}
-                aria-current={page === "profile" ? "page" : undefined}
               >
-                <UserRound size={19} strokeWidth={1.8} aria-hidden="true" />
+                <UserRound size={19} aria-hidden="true" />
                 <span>Profile</span>
               </button>
 
               <button
                 type="button"
-                className={`nav-secondary ${page === "goals" ? "active" : ""}`}
+                className={
+                  page === "goals"
+                    ? "nav-secondary active"
+                    : "nav-secondary"
+                }
                 onClick={() => setPage("goals")}
-                aria-current={page === "goals" ? "page" : undefined}
               >
-                <Target size={19} strokeWidth={1.8} aria-hidden="true" />
+                <Target size={19} aria-hidden="true" />
                 <span>Goals</span>
               </button>
 
@@ -208,13 +223,11 @@ function App() {
                       : ""
                 }
                 onClick={() => setPage("account")}
-                aria-current={page === "account" ? "page" : undefined}
               >
-                <Settings2 size={19} strokeWidth={1.8} aria-hidden="true" />
+                <Settings2 size={19} aria-hidden="true" />
                 <span>Account</span>
               </button>
             </nav>
-
 
             {page === "dashboard" ? (
               <DashboardPage
@@ -222,32 +235,40 @@ function App() {
                 onDayChange={setDashboardDay}
                 onOpenGoals={() => setPage("goals")}
               />
+            ) : page === "meals" ? (
+              <MealsPage
+                day={dashboardDay}
+                onDayChange={setDashboardDay}
+                onSearch={openMealSearch}
+                onManualLog={openManualLog}
+              />
             ) : page === "food-search" ? (
-              <FoodSearchPage onLogFood={openFoodLog} />
+              <FoodSearchPage onLogFood={openSelectedFood} />
             ) : page === "food-log" ? (
               <FoodLogPage
                 food={foodToLog}
                 defaultDay={dashboardDay}
+                defaultMeal={selectedMeal}
                 onSaved={handleFoodSaved}
                 onCancel={() =>
-                  setPage(foodToLog ? "food-search" : "dashboard")
+                  setPage(foodToLog ? "food-search" : "meals")
                 }
+              />
+            ) : page === "profile" ? (
+              <ProfilePage
+                email={user.email}
+                onLogout={handleLogout}
+                onOpenGoals={() => setPage("goals")}
               />
             ) : page === "goals" ? (
               <GoalsPage onBack={() => setPage("profile")} />
-            ) : page === "account" ? (
+            ) : (
               <AccountPage
                 user={user}
                 onUserUpdated={setUser}
                 onOpenProfile={() => setPage("profile")}
                 onOpenGoals={() => setPage("goals")}
                 onLogout={handleLogout}
-              />
-            ) : (
-              <ProfilePage
-                email={user.email}
-                onLogout={handleLogout}
-                onOpenGoals={() => setPage("goals")}
               />
             )}
           </>
@@ -262,7 +283,9 @@ function App() {
             </p>
 
             <section className="login-card">
-              <h3>{mode === "login" ? "Log in" : "Create an account"}</h3>
+              <h3>
+                {mode === "login" ? "Log in" : "Create an account"}
+              </h3>
 
               <p className="form-description">
                 {mode === "login"
@@ -290,7 +313,9 @@ function App() {
                   value={password}
                   onChange={(event) => setPassword(event.target.value)}
                   autoComplete={
-                    mode === "login" ? "current-password" : "new-password"
+                    mode === "login"
+                      ? "current-password"
+                      : "new-password"
                   }
                   minLength={mode === "register" ? 8 : undefined}
                   required

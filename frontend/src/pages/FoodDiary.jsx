@@ -1,61 +1,25 @@
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
-  getFoodEntries,
   updateManualEntry,
   updateUsdaEntryQuantity,
   moveFoodEntry,
   deleteFoodEntry,
 } from "../api/client";
 
-const meals = [
-  { key: "breakfast", label: "Breakfast" },
-  { key: "lunch", label: "Lunch" },
-  { key: "dinner", label: "Dinner" },
-  { key: "snacks", label: "Snacks" },
+const mealOptions = [
+  ["breakfast", "Breakfast"],
+  ["lunch", "Lunch"],
+  ["dinner", "Dinner"],
+  ["snacks", "Snacks"],
 ];
 
-function FoodDiary({ day, revision, onChanged }) {
-  const [entries, setEntries] = useState([]);
+function FoodDiary({ entries, onChanged }) {
   const [editingId, setEditingId] = useState(null);
   const [form, setForm] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
+  const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
-
-  useEffect(() => {
-    let active = true;
-
-    async function loadEntries() {
-      setLoading(true);
-      setError("");
-      setEditingId(null);
-
-      try {
-        const data = await getFoodEntries(day);
-
-        if (active) {
-          setEntries(data);
-        }
-      } catch (err) {
-        if (active) {
-          setError(err.message);
-          setEntries([]);
-        }
-      } finally {
-        if (active) {
-          setLoading(false);
-        }
-      }
-    }
-
-    loadEntries();
-
-    return () => {
-      active = false;
-    };
-  }, [day, revision]);
 
   function startEditing(entry) {
     setEditingId(entry.id);
@@ -69,7 +33,7 @@ function FoodDiary({ day, revision, onChanged }) {
       carbs: String(entry.carbs),
       fats: String(entry.fats),
       meal_type: entry.meal_type,
-      quantity_g: entry.quantity_g?.toString() ?? "",
+      quantity_g: String(entry.quantity_g ?? ""),
       date_logged: entry.date_logged,
     });
   }
@@ -83,22 +47,21 @@ function FoodDiary({ day, revision, onChanged }) {
     }));
   }
 
-  async function handleSave(event) {
+  async function handleSave(event, entry) {
     event.preventDefault();
-
-    const entry = entries.find((item) => item.id === editingId);
-    if (!entry) return;
+    setError("");
 
     const isUsda = entry.quantity_g != null;
 
     if (isUsda) {
       if (!Number.isFinite(Number(form.quantity_g)) ||
           Number(form.quantity_g) <= 0) {
-        setError("Enter a valid quantity in grams.");
+        setError("Enter a valid quantity.");
         return;
       }
     } else {
-      const values = [
+      const calories = Number(form.calories);
+      const macros = [
         Number(form.protein),
         Number(form.carbs),
         Number(form.fats),
@@ -106,17 +69,16 @@ function FoodDiary({ day, revision, onChanged }) {
 
       if (
         !form.name_of_food.trim() ||
-        !Number.isInteger(Number(form.calories)) ||
-        Number(form.calories) < 0 ||
-        values.some((value) => !Number.isFinite(value) || value < 0)
+        !Number.isInteger(calories) ||
+        calories < 0 ||
+        macros.some((value) => !Number.isFinite(value) || value < 0)
       ) {
-        setError("Please enter valid food and nutrition values.");
+        setError("Please check your food details.");
         return;
       }
     }
 
-    setError("");
-    setSaving(true);
+    setBusy(true);
 
     try {
       if (isUsda) {
@@ -136,278 +98,247 @@ function FoodDiary({ day, revision, onChanged }) {
         });
       }
 
+      await onChanged();
+
       setEditingId(null);
-      setMessage("Food entry updated.");
-      onChanged();
+      setMessage("Entry updated.");
     } catch (err) {
       setError(err.message);
     } finally {
-      setSaving(false);
+      setBusy(false);
     }
   }
 
-  async function handleMove() {
-    if (!form.date_logged) {
-      setError("Choose a valid date.");
+  async function handleMove(entry) {
+    if (!form.date_logged ||
+        form.date_logged === entry.date_logged) {
       return;
     }
 
     setError("");
-    setSaving(true);
+    setBusy(true);
 
     try {
-      await moveFoodEntry(editingId, form.date_logged);
-
+      await moveFoodEntry(entry.id, form.date_logged);
+      await onChanged();
       setEditingId(null);
-      setMessage(`Entry moved to ${form.date_logged}.`);
-      onChanged();
+      setMessage("Entry moved to the selected date.");
     } catch (err) {
       setError(err.message);
     } finally {
-      setSaving(false);
+      setBusy(false);
     }
   }
 
   async function handleDelete(entry) {
-    const confirmed = window.confirm(
-      `Delete "${entry.name_of_food}" from your diary?`
-    );
-
-    if (!confirmed) return;
+    if (!window.confirm(`Delete "${entry.name_of_food}"?`)) {
+      return;
+    }
 
     setError("");
-    setSaving(true);
+    setBusy(true);
 
     try {
       await deleteFoodEntry(entry.id);
-
+      await onChanged();
       setEditingId(null);
-      setMessage("Food entry deleted.");
-      onChanged();
+      setMessage("Entry deleted.");
     } catch (err) {
       setError(err.message);
     } finally {
-      setSaving(false);
+      setBusy(false);
     }
   }
 
   return (
-    <section className="summary-card diary-section">
-      <div className="diary-heading">
-        <div>
-          <h3>Food diary</h3>
-          <p>Individual entries for {day}</p>
-        </div>
+    <div className="meal-diary-content">
+      {message && (
+        <p className="diary-message" role="status">{message}</p>
+      )}
 
-        <span className="diary-count">
-          {entries.length} {entries.length === 1 ? "entry" : "entries"}
-        </span>
-      </div>
+      {error && (
+        <p className="error-message" role="alert">{error}</p>
+      )}
 
-      {message && <p className="diary-message">{message}</p>}
-      {error && <p className="error-message">{error}</p>}
-
-      {loading ? (
-        <p>Loading food diary...</p>
-      ) : entries.length === 0 ? (
-        <p>No food entries logged for this day.</p>
+      {entries.length === 0 ? (
+        <p className="diary-empty">No foods logged yet.</p>
       ) : (
-        meals.map(({ key, label }) => {
-          const mealEntries = entries.filter(
-            (entry) => entry.meal_type === key
-          );
+        entries.map((entry) => {
+          const isUsda = entry.quantity_g != null;
+          const isEditing = editingId === entry.id;
 
           return (
-            <div className="diary-meal" key={key}>
-              <h4>{label}</h4>
+            <div className="diary-entry" key={entry.id}>
+              <div className="diary-entry-header">
+                <div>
+                  <h5>{entry.name_of_food}</h5>
+                  <p>
+                    {isUsda
+                      ? `USDA · ${entry.quantity_g} g`
+                      : "Manual entry"}
+                  </p>
+                </div>
 
-              {mealEntries.length === 0 ? (
-                <p className="diary-empty">No foods logged.</p>
-              ) : (
-                mealEntries.map((entry) => {
-                  const isUsda = entry.quantity_g != null;
-                  const isEditing = editingId === entry.id;
+                <strong>{entry.calories} kcal</strong>
+              </div>
 
-                  return (
-                    <div className="diary-entry" key={entry.id}>
-                      <div className="diary-entry-header">
-                        <div>
-                          <h5>{entry.name_of_food}</h5>
+              <div className="diary-entry-macros">
+                <span>P {entry.protein.toFixed(1)} g</span>
+                <span>C {entry.carbs.toFixed(1)} g</span>
+                <span>F {entry.fats.toFixed(1)} g</span>
+              </div>
 
-                          <p>
-                            {isUsda
-                              ? `USDA · ${entry.quantity_g} g`
-                              : "Manual entry"}
-                          </p>
+              {isEditing ? (
+                <div className="diary-editor">
+                  <form onSubmit={(event) => handleSave(event, entry)}>
+                    {isUsda ? (
+                      <div className="profile-field">
+                        <label htmlFor={`quantity-${entry.id}`}>
+                          Quantity (g)
+                        </label>
+                        <input
+                          id={`quantity-${entry.id}`}
+                          name="quantity_g"
+                          type="number"
+                          min="0.01"
+                          step="any"
+                          value={form.quantity_g}
+                          onChange={handleChange}
+                          required
+                        />
+                      </div>
+                    ) : (
+                      <div className="diary-edit-grid">
+                        <div className="profile-field diary-full">
+                          <label htmlFor={`name-${entry.id}`}>
+                            Food name
+                          </label>
+                          <input
+                            id={`name-${entry.id}`}
+                            name="name_of_food"
+                            value={form.name_of_food}
+                            onChange={handleChange}
+                            required
+                          />
                         </div>
 
-                        <strong>{entry.calories} kcal</strong>
-                      </div>
-
-                      <div className="diary-entry-macros">
-                        <span>Protein: {entry.protein.toFixed(1)} g</span>
-                        <span>Carbs: {entry.carbs.toFixed(1)} g</span>
-                        <span>Fats: {entry.fats.toFixed(1)} g</span>
-                      </div>
-
-                      {isEditing ? (
-                        <div className="diary-editor">
-                          <form onSubmit={handleSave}>
-                            {isUsda ? (
-                              <div className="profile-field">
-                                <label htmlFor={`quantity-${entry.id}`}>
-                                  Quantity (g)
-                                </label>
-
-                                <input
-                                  id={`quantity-${entry.id}`}
-                                  name="quantity_g"
-                                  type="number"
-                                  min="0.01"
-                                  step="any"
-                                  value={form.quantity_g}
-                                  onChange={handleChange}
-                                  required
-                                />
-
-                                <p className="diary-note">
-                                  FastAPI will recalculate nutrition from USDA.
-                                </p>
-                              </div>
-                            ) : (
-                              <div className="diary-edit-grid">
-                                <div className="profile-field diary-full">
-                                  <label htmlFor="edit-name">
-                                    Food name
-                                  </label>
-                                  <input
-                                    id="edit-name"
-                                    name="name_of_food"
-                                    value={form.name_of_food}
-                                    onChange={handleChange}
-                                    required
-                                  />
-                                </div>
-
-                                {[
-                                  ["calories", "Calories (kcal)"],
-                                  ["protein", "Protein (g)"],
-                                  ["carbs", "Carbs (g)"],
-                                  ["fats", "Fats (g)"],
-                                ].map(([name, label]) => (
-                                  <div className="profile-field" key={name}>
-                                    <label htmlFor={`edit-${name}`}>
-                                      {label}
-                                    </label>
-                                    <input
-                                      id={`edit-${name}`}
-                                      name={name}
-                                      type="number"
-                                      min="0"
-                                      step={name === "calories" ? "1" : "any"}
-                                      value={form[name]}
-                                      onChange={handleChange}
-                                      required
-                                    />
-                                  </div>
-                                ))}
-
-                                <div className="profile-field diary-full">
-                                  <label htmlFor="edit-meal">Meal</label>
-                                  <select
-                                    id="edit-meal"
-                                    name="meal_type"
-                                    value={form.meal_type}
-                                    onChange={handleChange}
-                                  >
-                                    {meals.map((meal) => (
-                                      <option key={meal.key} value={meal.key}>
-                                        {meal.label}
-                                      </option>
-                                    ))}
-                                  </select>
-                                </div>
-                              </div>
-                            )}
-
-                            <button
-                              type="submit"
-                              disabled={saving}
-                              className="diary-save"
-                            >
-                              {saving ? "Saving..." : "Save changes"}
-                            </button>
-                          </form>
-
-                          <div className="diary-move">
-                            <div className="profile-field">
-                              <label htmlFor={`move-${entry.id}`}>
-                                Move to another date
-                              </label>
-                              <input
-                                id={`move-${entry.id}`}
-                                name="date_logged"
-                                type="date"
-                                value={form.date_logged}
-                                onChange={handleChange}
-                              />
-                            </div>
-
-                            <button
-                              type="button"
-                              className="secondary-button"
-                              onClick={handleMove}
-                              disabled={
-                                saving ||
-                                !form.date_logged ||
-                                form.date_logged === entry.date_logged
-                              }
-                            >
-                              Move entry
-                            </button>
+                        {[
+                          ["calories", "Calories (kcal)"],
+                          ["protein", "Protein (g)"],
+                          ["carbs", "Carbs (g)"],
+                          ["fats", "Fats (g)"],
+                        ].map(([name, label]) => (
+                          <div className="profile-field" key={name}>
+                            <label htmlFor={`${name}-${entry.id}`}>
+                              {label}
+                            </label>
+                            <input
+                              id={`${name}-${entry.id}`}
+                              name={name}
+                              type="number"
+                              min="0"
+                              step={name === "calories" ? "1" : "any"}
+                              value={form[name]}
+                              onChange={handleChange}
+                              required
+                            />
                           </div>
+                        ))}
 
-                          <button
-                            type="button"
-                            className="diary-cancel"
-                            onClick={() => {
-                              setEditingId(null);
-                              setError("");
-                            }}
-                            disabled={saving}
+                        <div className="profile-field diary-full">
+                          <label htmlFor={`meal-${entry.id}`}>
+                            Meal
+                          </label>
+                          <select
+                            id={`meal-${entry.id}`}
+                            name="meal_type"
+                            value={form.meal_type}
+                            onChange={handleChange}
                           >
-                            Cancel editing
-                          </button>
+                            {mealOptions.map(([value, label]) => (
+                              <option key={value} value={value}>
+                                {label}
+                              </option>
+                            ))}
+                          </select>
                         </div>
-                      ) : (
-                        <div className="diary-entry-actions">
-                          <button
-                            type="button"
-                            onClick={() => startEditing(entry)}
-                            disabled={saving}
-                          >
-                            Edit
-                          </button>
+                      </div>
+                    )}
 
-                          <button
-                            type="button"
-                            className="diary-delete"
-                            onClick={() => handleDelete(entry)}
-                            disabled={saving}
-                          >
-                            Delete
-                          </button>
-                        </div>
-                      )}
+                    <button
+                      type="submit"
+                      className="diary-save"
+                      disabled={busy}
+                    >
+                      {busy ? "Saving..." : "Save changes"}
+                    </button>
+                  </form>
+
+                  <div className="diary-move">
+                    <div className="profile-field">
+                      <label htmlFor={`date-${entry.id}`}>
+                        Move to another date
+                      </label>
+                      <input
+                        id={`date-${entry.id}`}
+                        name="date_logged"
+                        type="date"
+                        value={form.date_logged}
+                        onChange={handleChange}
+                      />
                     </div>
-                  );
-                })
+
+                    <button
+                      type="button"
+                      className="secondary-button"
+                      onClick={() => handleMove(entry)}
+                      disabled={
+                        busy ||
+                        !form.date_logged ||
+                        form.date_logged === entry.date_logged
+                      }
+                    >
+                      Move entry
+                    </button>
+                  </div>
+
+                  <button
+                    type="button"
+                    className="diary-cancel"
+                    disabled={busy}
+                    onClick={() => {
+                      setEditingId(null);
+                      setError("");
+                    }}
+                  >
+                    Cancel editing
+                  </button>
+                </div>
+              ) : (
+                <div className="diary-entry-actions">
+                  <button
+                    type="button"
+                    disabled={busy}
+                    onClick={() => startEditing(entry)}
+                  >
+                    Edit
+                  </button>
+
+                  <button
+                    type="button"
+                    className="diary-delete"
+                    disabled={busy}
+                    onClick={() => handleDelete(entry)}
+                  >
+                    Delete
+                  </button>
+                </div>
               )}
             </div>
           );
         })
       )}
-    </section>
+    </div>
   );
 }
 
