@@ -1,10 +1,6 @@
 from fastapi import FastAPI
-from backend.app.database import engine, Base
 from backend.app.routers import foodentry, goal, auth, users, profile, summary, foodsearch
 
-
-
-Base.metadata.create_all(bind=engine)
 
 calorie_app = FastAPI(title="Welcome to calorie app")
 calorie_app.include_router(foodentry.router)
