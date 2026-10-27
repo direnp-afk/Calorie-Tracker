@@ -14,45 +14,72 @@
 
 
 
+
 ## Screenshots
 
-### Desktop
+A look at NutraLog's clean, responsive interface across desktop and mobile.
 
-<table>
-  <tr>
-    <th align="center">Dashboard</th>
-    <th align="center">Meal Diary</th>
-  </tr>
-  <tr>
-    <td align="center">
-      <img src="https://github.com/user-attachments/assets/04d4736a-2b69-4dec-ba24-2a3614fa2e4c" alt="NutraLog Dashboard" width="420">
-    </td>
-    <td align="center">
-      <img src="https://github.com/user-attachments/assets/3cf768bb-37f5-48c9-8a8f-d258ec26a0f7" alt="NutraLog Meal Diary" width="420">
-    </td>
-  </tr>
-</table>
+### Dashboard
 
-### Mobile
+<p align="center">
+  <img
+    src="https://github.com/user-attachments/assets/04d4736a-2b69-4dec-ba24-2a3614fa2e4c"
+    alt="NutraLog desktop dashboard"
+    width="780"
+  />
+</p>
 
-<table>
-  <tr>
-    <th align="center">Dashboard</th>
-    <th align="center">Meals</th>
-    <th align="center">Account</th>
-  </tr>
-  <tr>
-    <td align="center">
-      <img src="https://github.com/user-attachments/assets/98592174-50c3-4306-936e-b99045792a11" alt="NutraLog Mobile Dashboard" width="190">
-    </td>
-    <td align="center">
-      <img src="docs/screenshots/mobile-meals.png" alt="NutraLog Mobile Meals" width="190">
-    </td>
-    <td align="center">
-      <img src="docs/screenshots/mobile-account.png" alt="NutraLog Mobile Account" width="190">
-    </td>
-  </tr>
-</table>
+<p align="center">
+  <sub>Track daily calories, macronutrients and progress towards personalised nutrition goals.</sub>
+</p>
+
+### Meal Diary
+
+<p align="center">
+  <img
+    src="https://github.com/user-attachments/assets/3cf768bb-37f5-48c9-8a8f-d258ec26a0f7"
+    alt="NutraLog desktop meal diary"
+    width="780"
+  />
+</p>
+
+<p align="center">
+  <sub>Log and manage food entries across breakfast, lunch, dinner and snacks.</sub>
+</p>
+
+### Mobile Experience
+
+<p align="center">
+  <img
+    src="https://github.com/user-attachments/assets/98592174-50c3-4306-936e-b99045792a11"
+    alt="NutraLog mobile dashboard"
+    width="195"
+  />
+  &nbsp;
+  <img
+    src="https://github.com/user-attachments/assets/a4c512a8-cb2a-4763-be09-fd442f8b6d9b"
+    alt="NutraLog mobile meals"
+    width="195"
+  />
+  &nbsp;
+  <img
+    src="https://github.com/user-attachments/assets/a6b7248e-f170-4e17-a4e4-0b823cf6dae1"
+    alt="NutraLog mobile account settings"
+    width="195"
+  />
+</p>
+
+<p align="center">
+  <sub>
+    <strong>Dashboard</strong> — Daily progress &nbsp;·&nbsp;
+    <strong>Meals</strong> — Food logging &nbsp;·&nbsp;
+    <strong>Account</strong> — Profile and goals
+  </sub>
+</p>
+
+<p align="center">
+  <sub>Fully responsive design for tracking nutrition on the go.</sub>
+</p>
 
 
 
