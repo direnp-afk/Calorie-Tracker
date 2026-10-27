@@ -11,18 +11,48 @@
 
 > **Hosting note:** The backend runs on Render's free tier and may take a short time to respond after a period of inactivity.
 
-<!-- SCREENSHOTS: Add your own screenshots to docs/screenshots/ and uncomment these lines.
+
+
 ## Screenshots
 
+A preview of NutraLog's responsive interface across desktop and mobile.
+
 ### Dashboard
-![NutraLog dashboard](docs/screenshots/dashboard.png)
 
-### Meal diary
-![NutraLog meal diary](docs/screenshots/meals.png)
+Track daily calorie intake, monitor macronutrients, and view progress towards personalised nutrition goals.
 
-### Mobile layout
-![NutraLog mobile view](docs/screenshots/mobile.png)
--->
+<p align="center">
+  <img
+    src="https://github.com/user-attachments/assets/04d4736a-2b69-4dec-ba24-2a3614fa2e4c"
+    alt="NutraLog dashboard showing daily nutrition tracking"
+    width="900"
+  />
+</p>
+
+### Meal Diary
+
+Log and manage food entries throughout the day, organised by breakfast, lunch, dinner, and snacks.
+
+<p align="center">
+  <img
+    src="https://github.com/user-attachments/assets/3cf768bb-37f5-48c9-8a8f-d258ec26a0f7"
+    alt="NutraLog meal diary showing logged food entries"
+    width="900"
+  />
+</p>
+
+### Mobile Experience
+
+A responsive layout designed for tracking nutrition on the go.
+
+<p align="center">
+  <img
+    src="https://github.com/user-attachments/assets/98592174-50c3-4306-936e-b99045792a11"
+    alt="NutraLog mobile interface"
+    width="300"
+  />
+</p>
+
 
 ## Features
 
