@@ -161,13 +161,19 @@ The React application calls `/api/...` endpoints. During local development, Vite
 
 FastAPI uses SQLAlchemy to access PostgreSQL in production and SQLite for local development. Alembic manages schema changes in both environments.
 
-### Key engineering decisions
+### Design Decisions & Trade-offs
 
-- **Separation of concerns:** API routes, SQLAlchemy models, Pydantic schemas and nutrition calculations are organised into separate modules.
-- **User-scoped data:** Protected routes use the authenticated user's identity when accessing saved profiles, goals and food entries.
-- **Isolated tests:** The pytest suite uses an in-memory SQLite database and mocked USDA responses, avoiding changes to real user data or reliance on an external service.
-- **Versioned schema:** Alembic migrations make database changes repeatable rather than creating tables automatically when the application starts.
-- **Automated checks:** GitHub Actions runs backend tests, validates migrations, checks frontend code with ESLint and builds the React app on pushes and pull requests.
+- **React + FastAPI:** Chose React for building a responsive, component-based interface and FastAPI for developing RESTful endpoints. Separating the frontend and backend improves maintainability and allows independent deployment, although it requires managing communication between two services.
+
+- **PostgreSQL + SQLite:** Used SQLite for lightweight local development and PostgreSQL for reliable, persistent cloud storage. SQLAlchemy provides a consistent way to interact with both databases, while Alembic manages schema migrations across environments.
+
+- **JWT Authentication:** Implemented JWT-based authentication with securely hashed passwords to protect user accounts and restrict access to personal nutrition data. This provides a stateless authentication system but requires careful token handling and user-level authorisation.
+
+- **USDA FoodData Central API:** Integrated an external nutrition database rather than maintaining thousands of food records manually. This provides access to extensive nutritional information but introduces dependencies on API availability, response times and request limits.
+
+- **Automated Testing & CI/CD:** Used pytest to validate backend functionality and GitHub Actions to automatically run tests, check database migrations and build the React frontend. This helps catch regressions before deployment and makes future development safer.
+
+- **Cloud Deployment:** Deployed the frontend on Vercel, backend on Render and PostgreSQL database on Neon. This provides a publicly accessible application without managing servers directly, although free-tier limitations can introduce cold starts and service delays.
 
 ## Project structure
 
