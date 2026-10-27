@@ -13,45 +13,47 @@
 
 
 
+
 ## Screenshots
 
-A preview of NutraLog's responsive interface across desktop and mobile.
+### Desktop
 
-### Dashboard
+<table>
+  <tr>
+    <th align="center">Dashboard</th>
+    <th align="center">Meal Diary</th>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="https://github.com/user-attachments/assets/04d4736a-2b69-4dec-ba24-2a3614fa2e4c" alt="NutraLog Dashboard" width="420">
+    </td>
+    <td align="center">
+      <img src="https://github.com/user-attachments/assets/3cf768bb-37f5-48c9-8a8f-d258ec26a0f7" alt="NutraLog Meal Diary" width="420">
+    </td>
+  </tr>
+</table>
 
-Track daily calorie intake, monitor macronutrients, and view progress towards personalised nutrition goals.
+### Mobile
 
-<p align="center">
-  <img
-    src="https://github.com/user-attachments/assets/04d4736a-2b69-4dec-ba24-2a3614fa2e4c"
-    alt="NutraLog dashboard showing daily nutrition tracking"
-    width="900"
-  />
-</p>
+<table>
+  <tr>
+    <th align="center">Dashboard</th>
+    <th align="center">Meals</th>
+    <th align="center">Account</th>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="https://github.com/user-attachments/assets/98592174-50c3-4306-936e-b99045792a11" alt="NutraLog Mobile Dashboard" width="190">
+    </td>
+    <td align="center">
+      <img src="docs/screenshots/mobile-meals.png" alt="NutraLog Mobile Meals" width="190">
+    </td>
+    <td align="center">
+      <img src="docs/screenshots/mobile-account.png" alt="NutraLog Mobile Account" width="190">
+    </td>
+  </tr>
+</table>
 
-### Meal Diary
-
-Log and manage food entries throughout the day, organised by breakfast, lunch, dinner, and snacks.
-
-<p align="center">
-  <img
-    src="https://github.com/user-attachments/assets/3cf768bb-37f5-48c9-8a8f-d258ec26a0f7"
-    alt="NutraLog meal diary showing logged food entries"
-    width="900"
-  />
-</p>
-
-### Mobile Experience
-
-A responsive layout designed for tracking nutrition on the go.
-
-<p align="center">
-  <img
-    src="https://github.com/user-attachments/assets/98592174-50c3-4306-936e-b99045792a11"
-    alt="NutraLog mobile interface"
-    width="300"
-  />
-</p>
 
 
 ## Features
