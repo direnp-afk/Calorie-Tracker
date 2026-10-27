@@ -5,13 +5,11 @@
 
 [![CI](https://github.com/direnp-afk/Calorie-Tracker/actions/workflows/ci.yml/badge.svg)](https://github.com/direnp-afk/Calorie-Tracker/actions/workflows/ci.yml)
 
-**Live app:** (https://nutralog-calorie-tracker.vercel.app/)   
+**Live app:** https://nutralog-calorie-tracker.vercel.app/   
 **API documentation:** [FastAPI Swagger UI](https://nutralog-api.onrender.com/docs)  
 **Source code:** [GitHub repository](https://github.com/direnp-afk/Calorie-Tracker)
 
 > **Hosting note:** The backend runs on Render's free tier and may take a short time to respond after a period of inactivity.
-
-
 
 
 
@@ -22,7 +20,7 @@
   <sub>A look at NutraLog's responsive interface across desktop and mobile.</sub>
 </p>
 
-### <p align="center">Dashboard</p>
+<h3 align="center">Dashboard</h3>
 
 <p align="center">
   <img
@@ -36,7 +34,9 @@
   <sub>Monitor daily calories, macronutrients and progress towards personalised nutrition goals.</sub>
 </p>
 
-### <p align="center">Meal Diary</p>
+---
+
+<h3 align="center">Meal Diary</h3>
 
 <p align="center">
   <img
@@ -58,28 +58,28 @@
   <img
     src="https://github.com/user-attachments/assets/98592174-50c3-4306-936e-b99045792a11"
     alt="NutraLog mobile dashboard"
-    width="185"
+    width="180"
   />
-  &nbsp;
+  &emsp;&emsp;
   <img
     src="https://github.com/user-attachments/assets/a4c512a8-cb2a-4763-be09-fd442f8b6d9b"
     alt="NutraLog mobile meals"
-    width="185"
+    width="180"
   />
-  &nbsp;
+  &emsp;&emsp;
   <img
     src="https://github.com/user-attachments/assets/a6b7248e-f170-4e17-a4e4-0b823cf6dae1"
     alt="NutraLog mobile account"
-    width="185"
+    width="180"
   />
 </p>
 
 <p align="center">
   <sub>
     <strong>Dashboard</strong> · Daily progress
-    &nbsp;&nbsp;&nbsp;&nbsp;
+    &emsp;&emsp;
     <strong>Meals</strong> · Food logging
-    &nbsp;&nbsp;&nbsp;&nbsp;
+    &emsp;&emsp;
     <strong>Account</strong> · Profile & goals
   </sub>
 </p>
@@ -87,7 +87,6 @@
 <p align="center">
   <sub>Track your nutrition and manage your account from any device.</sub>
 </p>
-
 
 
 ## Features
